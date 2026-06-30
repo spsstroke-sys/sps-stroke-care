@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>BE-FAST & กายภาพบำบัด — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap');
+
+:root{
+--teal:#0D7C6E; --teal-lt:#E2F5F3;
+--red:#D63031; --red-lt:#FDE8E8;
+--amber:#E8870A; --amber-lt:#FFF4E0;
+--green:#27AE60; --green-lt:#E9F8EF;
+--ink:#1C2B2A; --ink-s:#3D5250; --muted:#718E8C;
+--rule:#D4E8E5; --bg:#F5FAF9;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+
+/* NAV */
+.tab-nav{display:flex;background:white;border-bottom:2px solid var(--rule);position:sticky;top:0;z-index:100;}
+.tab-btn{flex:1;padding:14px 8px;text-align:center;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-btn.active.teal{color:var(--teal);border-bottom-color:var(--teal);}
+
+/* PAGE */
+.page{display:none;}
+.page.show{display:block;}
+
+/* BEFAST PAGE */
+.bf-hero{background:linear-gradient(135deg,var(--red),#EF4444);padding:20px 16px;color:white;text-align:center;}
+.bf-hero-title{font-family:'Kanit',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.bf-hero-sub{font-size:15px;opacity:.9;}
+.bf-hero-tag{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:white;font-size:13px;font-weight:700;padding:4px 14px;border-radius:20px;margin-top:10px;}
+
+/* BEFAST CARD */
+.bf-cards{padding:14px 12px;display:flex;flex-direction:column;gap:12px;}
+.bf-card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);border:2px solid var(--rule);}
+.bf-card-top{padding:16px 16px 8px;display:flex;align-items:center;gap:12px;}
+.bf-letter{font-family:'Kanit',sans-serif;font-size:52px;font-weight:800;line-height:1;flex-shrink:0;width:60px;text-align:center;}
+.bf-word{flex:1;}
+.bf-word-en{font-family:'Kanit',sans-serif;font-size:20px;font-weight:700;}
+.bf-word-th{font-size:14px;color:var(--ink-s);margin-top:2px;}
+
+/* SVG ILLUSTRATIONS */
+.bf-illus{padding:8px 16px 12px;display:flex;align-items:center;gap:12px;}
+.bf-illus-img{width:90px;height:90px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bf-illus-text{flex:1;}
+.bf-symptom{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.bf-detail{font-size:13px;color:var(--ink-s);line-height:1.6;}
+
+/* EMERGENCY */
+.bf-emergency{margin:0 12px 14px;background:var(--red);border-radius:16px;padding:14px 16px;color:white;text-align:center;}
+.bf-em-title{font-family:'Kanit',sans-serif;font-size:20px;font-weight:800;margin-bottom:10px;}
+.bf-em-call{background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);border-radius:12px;padding:12px;font-family:'Kanit',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px;cursor:pointer;}
+.bf-em-call a{color:white;text-decoration:none;}
+.bf-em-note{font-size:13px;opacity:.88;line-height:1.6;}
+
+/* TIME WINDOW */
+.time-box{margin:0 12px 14px;background:var(--amber-lt);border:2px solid #F5C87A;border-radius:16px;padding:14px 16px;text-align:center;}
+.time-num{font-family:'Kanit',sans-serif;font-size:42px;font-weight:800;color:var(--amber);line-height:1;}
+.time-label{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:#7a4500;margin-top:4px;}
+.time-detail{font-size:13px;color:var(--ink-s);margin-top:6px;line-height:1.6;}
+
+/* REHAB PAGE */
+.rh-hero{background:linear-gradient(135deg,var(--teal),#1A9F8F);padding:20px 16px;color:white;text-align:center;}
+.rh-hero-title{font-family:'Kanit',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;}
+.rh-hero-sub{font-size:14px;opacity:.9;}
+
+/* EXERCISE CARD */
+.ex-cards{padding:14px 12px;display:flex;flex-direction:column;gap:12px;}
+.ex-card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);border:2px solid var(--rule);}
+.ex-hd{padding:12px 16px;display:flex;align-items:center;gap:10px;}
+.ex-hd-icon{font-size:24px;}
+.ex-hd-text{flex:1;}
+.ex-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;}
+.ex-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.ex-badge{background:var(--teal-lt);color:var(--teal);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.ex-illus{background:var(--teal-lt);padding:16px;display:flex;align-items:center;justify-content:center;}
+.ex-steps{padding:12px 16px 14px;display:flex;flex-direction:column;gap:8px;}
+.ex-step{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--ink-s);}
+.ex-num{width:24px;height:24px;border-radius:50%;background:var(--teal);color:white;font-family:'Kanit',sans-serif;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ex-warn{margin:0 16px 12px;background:var(--red-lt);border:1.5px solid #F5AAAA;border-radius:12px;padding:11px 14px;font-size:13px;color:#8B1A1A;}
+.ex-warn-title{font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px;}
+
+/* PT SECTION */
+.pt-section{padding:14px 12px 0;}
+.pt-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:var(--teal);margin-bottom:12px;padding:0 4px;}
+.pt-card{background:white;border-radius:16px;margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);border:1.5px solid var(--rule);}
+.pt-hd{background:var(--teal);padding:12px 16px;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:white;display:flex;align-items:center;gap:8px;}
+.pt-body{padding:12px 16px;font-size:14px;color:var(--ink-s);line-height:1.65;}
+.pt-illus{padding:14px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;}
+
+.footer{background:var(--teal);padding:14px 16px;text-align:center;color:white;margin-top:8px;font-size:12px;line-height:1.7;opacity:.9;}
+</style>
+</head>
+<body>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+<button class="tab-btn active" onclick="showTab('befast',this)">🚨 BE-FAST<br><span style="font-size:11px">อาการฉุกเฉิน</span></button>
+<button class="tab-btn teal" onclick="showTab('rehab',this)">💪 กายภาพ<br><span style="font-size:11px">ฟื้นฟูร่างกาย</span></button>
+</div>
+
+<!-- ══ BEFAST PAGE ══ -->
+<div class="page show" id="befast">
+
+<div class="bf-hero">
+<div class="bf-hero-title">🧠 BE-FAST</div>
+<div class="bf-hero-sub">สังเกตอาการ Stroke ฉุกเฉิน</div>
+<div class="bf-hero-tag">⏰ ทุกนาทีมีค่า — "Time is Brain"</div>
+</div>
+
+<!-- TIME WINDOW -->
+<div style="padding:14px 12px 0">
+<div class="time-box">
+<div class="time-num">4.5</div>
+<div class="time-label">ชั่วโมง — หน้าต่างเวลาฉีดยา rt-PA</div>
+<div class="time-detail">นับจากเริ่มมีอาการ รีบโทร 1669 ทันที<br>อย่ารอดูอาการ อย่าขับรถมาเอง</div>
+</div>
+</div>
+
+<div class="bf-cards">
+
+<!-- B -->
+<div class="bf-card">
+<div class="bf-card-top">
+<div class="bf-letter" style="color:#7C3AED">B</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:#7C3AED">Balance</div>
+<div class="bf-word-th">สูญเสียการทรงตัว</div>
+</div>
+</div>
+<div class="bf-illus">
+<div class="bf-illus-img" style="background:#F5F3FF">
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+<!-- Person falling/unbalanced -->
+<circle cx="40" cy="18" r="10" fill="#7C3AED" opacity="0.9"/>
+<!-- Body tilted -->
+<line x1="40" y1="28" x2="35" y2="52" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"/>
+<!-- Arms unbalanced -->
+<line x1="38" y1="35" x2="20" y2="28" stroke="#7C3AED" stroke-width="4" stroke-linecap="round"/>
+<line x1="37" y1="36" x2="52" y2="44" stroke="#7C3AED" stroke-width="4" stroke-linecap="round"/>
+<!-- Legs -->
+<line x1="35" y1="52" x2="25" y2="68" stroke="#7C3AED" stroke-width="4" stroke-linecap="round"/>
+<line x1="35" y1="52" x2="48" y2="65" stroke="#7C3AED" stroke-width="4" stroke-linecap="round"/>
+<!-- Stars/dizzy -->
+<text x="55" y="22" font-size="14">⭐</text>
+<text x="60" y="36" font-size="12">💫</text>
+<!-- Exclamation -->
+<circle cx="18" cy="58" r="8" fill="#EF4444" opacity="0.9"/>
+<text x="14.5" y="63" font-size="12" fill="white" font-weight="bold">!</text>
+</svg>
+</div>
+<div class="bf-illus-text">
+<div class="bf-symptom">เดินเซ ทรงตัวไม่ได้</div>
+<div class="bf-detail">เดินแล้วล้ม หรือเดินเซไปข้างหนึ่งทันที ทั้งที่ปกติเดินได้ดี</div>
+</div>
+</div>
+</div>
+
+<!-- E -->
+<div class="bf-card">
+<div class="bf-card-top">
+<div class="bf-letter" style="color:#0369A1">E</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:#0369A1">Eyes</div>
+<div class="bf-word-th">ตาผิดปกติ</div>
+</div>
+</div>
+<div class="bf-illus">
+<div class="bf-illus-img" style="background:#EFF6FF">
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+<!-- Face -->
+<circle cx="40" cy="40" r="30" fill="#FDE68A" stroke="#FCA5A5" stroke-width="2"/>
+<!-- Left eye normal -->
+<ellipse cx="28" cy="36" rx="8" ry="6" fill="white"/>
+<circle cx="28" cy="36" r="4" fill="#0369A1"/>
+<circle cx="30" cy="34" r="1.5" fill="white"/>
+<!-- Right eye blurry/X -->
+<ellipse cx="52" cy="36" rx="8" ry="6" fill="#FEE2E2"/>
+<line x1="46" y1="30" x2="58" y2="42" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
+<line x1="58" y1="30" x2="46" y2="42" stroke="#EF4444" stroke-width="3" stroke-linecap="round"/>
+<!-- Mouth worried -->
+<path d="M30 56 Q40 50 50 56" stroke="#92400E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<!-- Eyebrow worried -->
+<path d="M20 28 Q28 24 36 28" stroke="#92400E" stroke-width="2" fill="none"/>
+<path d="M44 28 Q52 24 60 28" stroke="#92400E" stroke-width="2" fill="none"/>
+</svg>
+</div>
+<div class="bf-illus-text">
+<div class="bf-symptom">ตาพร่า มองไม่เห็นข้างเดียว</div>
+<div class="bf-detail">มองเห็นภาพซ้อน หรือไม่เห็นครึ่งซ้าย/ขวาของภาพทันที</div>
+</div>
+</div>
+</div>
+
+<!-- F -->
+<div class="bf-card">
+<div class="bf-card-top">
+<div class="bf-letter" style="color:var(--red)">F</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:var(--red)">Face</div>
+<div class="bf-word-th">ปากเบี้ยว หน้าไม่สมมาตร</div>
+</div>
+</div>
+<div class="bf-illus">
+<div class="bf-illus-img" style="background:#FEF2F2">
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+<!-- Face -->
+<circle cx="40" cy="40" r="30" fill="#FDE68A" stroke="#FCA5A5" stroke-width="2"/>
+<!-- Eyes -->
+<ellipse cx="28" cy="34" rx="6" ry="5" fill="white"/>
+<circle cx="28" cy="34" r="3" fill="#374151"/>
+<ellipse cx="52" cy="34" rx="6" ry="5" fill="white"/>
+<circle cx="52" cy="34" r="3" fill="#374151"/>
+<!-- Drooping mouth - asymmetric -->
+<path d="M28 52 Q35 56 40 54 Q48 50 52 56" stroke="#EF4444" stroke-width="3" fill="none" stroke-linecap="round"/>
+<!-- Drool line -->
+<line x1="28" y1="54" x2="26" y2="64" stroke="#93C5FD" stroke-width="2.5" stroke-linecap="round"/>
+<!-- Left side drooping indicator -->
+<path d="M18 44 Q22 48 20 56" stroke="#EF4444" stroke-width="2" stroke-dasharray="3,2" fill="none"/>
+<!-- Warning arrow -->
+<text x="56" y="62" font-size="16">⬇️</text>
+</svg>
+</div>
+<div class="bf-illus-text">
+<div class="bf-symptom">ปากเบี้ยว มุมปากตก</div>
+<div class="bf-detail">ให้ยิ้ม ถ้ามุมปากข้างหนึ่งตกลง หรือหน้าไม่สมมาตร = สัญญาณอันตราย</div>
+</div>
+</div>
+</div>
+
+<!-- A -->
+<div class="bf-card">
+<div class="bf-card-top">
+<div class="bf-letter" style="color:var(--amber)">A</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:var(--amber)">Arms</div>
+<div class="bf-word-th">แขนอ่อนแรงข้างเดียว</div>
+</div>
+</div>
+<div class="bf-illus">
+<div class="bf-illus-img" style="background:#FFFBEB">
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+<!-- Person with arms raised unevenly -->
+<circle cx="40" cy="18" r="10" fill="#F59E0B"/>
+<!-- Body -->
+<line x1="40" y1="28" x2="40" y2="56" stroke="#F59E0B" stroke-width="5" stroke-linecap="round"/>
+<!-- Right arm raised strong -->
+<line x1="40" y1="34" x2="62" y2="22" stroke="#27AE60" stroke-width="5" stroke-linecap="round"/>
+<text x="58" y="20" font-size="12">💪</text>
+<!-- Left arm drooping weak -->
+<line x1="40" y1="34" x2="18" y2="46" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/>
+<text x="4" y="52" font-size="12">😞</text>
+<!-- Legs -->
+<line x1="40" y1="56" x2="30" y2="72" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
+<line x1="40" y1="56" x2="50" y2="72" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"/>
+<!-- Arrow down on weak arm -->
+<text x="20" y="56" font-size="14" fill="#EF4444">⬇️</text>
+</svg>
+</div>
+<div class="bf-illus-text">
+<div class="bf-symptom">ยกแขน 2 ข้างพร้อมกัน แขนข้างหนึ่งตก</div>
+<div class="bf-detail">ให้ยกแขน 2 ข้างขึ้นพร้อมกัน 10 วินาที ถ้าข้างหนึ่งตกลง = อันตราย</div>
+</div>
+</div>
+</div>
+
+<!-- S -->
+<div class="bf-card">
+<div class="bf-card-top">
+<div class="bf-letter" style="color:var(--green)">S</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:var(--green)">Speech</div>
+<div class="bf-word-th">พูดไม่ชัด ฟังไม่เข้าใจ</div>
+</div>
+</div>
+<div class="bf-illus">
+<div class="bf-illus-img" style="background:#F0FDF4">
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+<!-- Face -->
+<circle cx="40" cy="38" r="24" fill="#FDE68A" stroke="#A7F3D0" stroke-width="2"/>
+<!-- Eyes confused -->
+<ellipse cx="30" cy="32" rx="5" ry="4" fill="white"/>
+<circle cx="30" cy="32" r="2.5" fill="#374151"/>
+<ellipse cx="50" cy="32" rx="5" ry="4" fill="white"/>
+<circle cx="50" cy="32" r="2.5" fill="#374151"/>
+<!-- Mouth open/confused speech -->
+<ellipse cx="40" cy="46" rx="8" ry="6" fill="#FCA5A5" stroke="#EF4444" stroke-width="1.5"/>
+<!-- Speech bubble with garbled text -->
+<rect x="50" y="10" width="26" height="20" rx="6" fill="white" stroke="#27AE60" stroke-width="2"/>
+<text x="54" y="25" font-size="14" fill="#EF4444">?!#</text>
+<path d="M52 30 L48 38" stroke="#27AE60" stroke-width="2" fill="none"/>
+<!-- Question marks -->
+<text x="2" y="20" font-size="18" fill="#F59E0B">?</text>
+<text x="6" y="50" font-size="14" fill="#F59E0B">?</text>
+</svg>
+</div>
+<div class="bf-illus-text">
+<div class="bf-symptom">พูดไม่ชัด พูดไม่ได้ หรือฟังไม่เข้าใจ</div>
+<div class="bf-detail">พูดคำง่ายๆ เช่น "ฟ้าสีฟ้า" ถ้าพูดเพี้ยน ติดขัด หรือฟังไม่รู้เรื่อง = อันตราย</div>
+</div>
+</div>
+</div>
+
+<!-- T -->
+<div class="bf-card" style="border-color:var(--red);border-width:3px">
+<div class="bf-card-top" style="background:var(--red-lt)">
+<div class="bf-letter" style="color:var(--red);font-size:60px">T</div>
+<div class="bf-word">
+<div class="bf-word-en" style="color:var(--red);font-size:22px">Time</div>
+<div class="bf-word-th" style="font-size:15px;font-weight:700">โทร 1669 ทันที!</div>
+</div>
+</div>
+<div style="padding:14px 16px;background:var(--red-lt)">
+<div style="font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:var(--red);margin-bottom:8px">พบอาการ B-E-F-A-S อย่างใดอย่างหนึ่ง → โทร 1669 ทันที ไม่รอดูอาการ</div>
+<div style="font-size:14px;color:var(--ink-s);line-height:1.7">
+✅ จดเวลาที่เริ่มมีอาการ<br>
+✅ อย่าให้ผู้ป่วยกินน้ำหรืออาหาร<br>
+✅ อย่าขับรถมาเอง โทร 1669<br>
+✅ บอกพยาบาลว่า "สงสัย Stroke"
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- EMERGENCY CALL -->
+<div class="bf-emergency">
+<div class="bf-em-title">🚨 พบอาการ BE-FAST?</div>
+<div class="bf-em-call"><a href="tel:1669">📞 โทร 1669 — ด่วน!</a></div>
+
+<div class="bf-em-note">ทุกนาทีสมองตายเพิ่มขึ้น 1.9 ล้านเซลล์<br>อย่ารอ — โทร 1669 ได้เลยค่ะ</div>
+</div>
+
+</div>
+
+<!-- ══ REHAB PAGE ══ -->
+<div class="page" id="rehab">
+
+<div class="rh-hero">
+<div class="rh-hero-title">💪 การฟื้นฟูร่างกาย</div>
+<div class="rh-hero-sub">ทำซ้ำ สม่ำเสมอ — สมองสร้างเส้นทางใหม่ได้ (Neuroplasticity)</div>
+</div>
+
+<div class="ex-cards">
+
+<!-- มือและแขน -->
+<div class="ex-card">
+<div class="ex-hd">
+<span class="ex-hd-icon">🤲</span>
+<div class="ex-hd-text">
+<div class="ex-title">บริหารมือและแขน</div>
+<div class="ex-sub">เพิ่มความแข็งแรง ลดอาการเกร็ง</div>
+</div>
+<div class="ex-badge">10 ครั้ง × 3 เซต</div>
+</div>
+<div class="ex-illus">
+<svg width="280" height="120" viewBox="0 0 280 120" fill="none">
+<!-- Exercise 1: Grip -->
+<rect x="10" y="10" width="80" height="100" rx="12" fill="#E2F5F3"/>
+<text x="50" y="35" text-anchor="middle" font-size="11" fill="#0D7C6E" font-weight="bold">กำมือ</text>
+<!-- Hand closed -->
+<ellipse cx="50" cy="65" rx="18" ry="22" fill="#FCD9A8" stroke="#E8A87C" stroke-width="2"/>
+<rect x="35" y="55" width="8" height="14" rx="4" fill="#FCA5A5" stroke="#EF9A9A" stroke-width="1"/>
+<rect x="45" y="52" width="8" height="17" rx="4" fill="#FCA5A5" stroke="#EF9A9A" stroke-width="1"/>
+<rect x="55" y="53" width="8" height="16" rx="4" fill="#FCA5A5" stroke="#EF9A9A" stroke-width="1"/>
+<text x="50" y="100" text-anchor="middle" font-size="20">✊</text>
+
+<!-- Arrow -->
+<text x="100" y="68" font-size="22" fill="#0D7C6E">⇄</text>
+
+<!-- Exercise 2: Open -->
+<rect x="120" y="10" width="80" height="100" rx="12" fill="#E8FAF0"/>
+<text x="160" y="35" text-anchor="middle" font-size="11" fill="#27AE60" font-weight="bold">แบมือ</text>
+<text x="160" y="85" text-anchor="middle" font-size="36">🖐️</text>
+
+<!-- Exercise 3: Wrist rotate -->
+<rect x="210" y="10" width="65" height="100" rx="12" fill="#FFF4E0"/>
+<text x="242" y="35" text-anchor="middle" font-size="10" fill="#E8870A" font-weight="bold">หมุนข้อมือ</text>
+<text x="242" y="80" text-anchor="middle" font-size="30">🔄</text>
+<text x="242" y="105" text-anchor="middle" font-size="10" fill="#E8870A">10 รอบ</text>
+</svg>
+</div>
+<div class="ex-steps">
+<div class="ex-step"><div class="ex-num">1</div><span><strong>กำมือ</strong> แน่นที่สุดเท่าที่ทำได้ ค้างไว้ 3 วินาที แล้วแบออก</span></div>
+<div class="ex-step"><div class="ex-num">2</div><span><strong>หมุนข้อมือ</strong> วนตามเข็มและทวนเข็มนาฬิกา 10 รอบ</span></div>
+<div class="ex-step"><div class="ex-num">3</div><span><strong>งอ-เหยียดข้อศอก</strong> ช้าๆ นับ 3 ขึ้น นับ 3 ลง</span></div>
+</div>
+</div>
+
+<!-- ขาและเท้า -->
+<div class="ex-card">
+<div class="ex-hd">
+<span class="ex-hd-icon">🦵</span>
+<div class="ex-hd-text">
+<div class="ex-title">บริหารขาและเท้า</div>
+<div class="ex-sub">ป้องกันลิ่มเลือด เพิ่มความแข็งแรง</div>
+</div>
+<div class="ex-badge">10 ครั้ง × 3 เซต</div>
+</div>
+<div class="ex-illus">
+<svg width="280" height="130" viewBox="0 0 280 130" fill="none">
+<!-- Person lying down exercising leg -->
+<rect x="10" y="10" width="260" height="110" rx="12" fill="#E2F5F3"/>
+<!-- Bed/mat -->
+<rect x="20" y="80" width="240" height="8" rx="4" fill="#A7F3D0"/>
+<!-- Person body -->
+<circle cx="50" cy="60" r="18" fill="#FCD9A8" stroke="#E8A87C" stroke-width="2"/>
+<text x="50" y="65" text-anchor="middle" font-size="16">😊</text>
+<!-- Body line -->
+<rect x="65" y="72" width="80" height="12" rx="6" fill="#FCD9A8" stroke="#E8A87C" stroke-width="1.5"/>
+<!-- Leg raised -->
+<line x1="145" y1="78" x2="200" y2="45" stroke="#0D7C6E" stroke-width="8" stroke-linecap="round"/>
+<line x1="200" y1="45" x2="240" y2="55" stroke="#0D7C6E" stroke-width="8" stroke-linecap="round"/>
+<ellipse cx="245" cy="60" rx="12" ry="8" fill="#FCA5A5" stroke="#EF4444" stroke-width="1.5"/>
+<!-- Arrow showing movement -->
+<path d="M185 35 Q200 20 215 35" stroke="#27AE60" stroke-width="2.5" fill="none" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+<!-- Labels -->
+<text x="140" y="25" font-size="12" fill="#0D7C6E" font-weight="bold">ยกขาสูง</text>
+<text x="195" y="110" font-size="11" fill="#0D7C6E">ค้างไว้ 3 วินาที</text>
+</svg>
+</div>
+<div class="ex-steps">
+<div class="ex-step"><div class="ex-num">1</div><span><strong>กระดกข้อเท้า</strong> ขึ้น-ลง 10 ครั้ง ทำทั้ง 2 ข้าง ป้องกันลิ่มเลือด</span></div>
+<div class="ex-step"><div class="ex-num">2</div><span><strong>ยกขา</strong> นอนหงาย ยกขาข้างที่อ่อนแรงขึ้นช้าๆ ค้าง 3 วินาที</span></div>
+<div class="ex-step"><div class="ex-num">3</div><span><strong>งอเข่า</strong> นอนหงาย งอเข่าเข้าหาอก ค้าง 3 วินาที แล้วเหยียดลง</span></div>
+</div>
+</div>
+
+<!-- ฝึกยืน-เดิน -->
+<div class="ex-card">
+<div class="ex-hd">
+<span class="ex-hd-icon">🚶</span>
+<div class="ex-hd-text">
+<div class="ex-title">ฝึกยืนและเดิน</div>
+<div class="ex-sub">เริ่มช้าๆ มีผู้ช่วยอยู่ใกล้เสมอ</div>
+</div>
+<div class="ex-badge">ทำวันละ 2-3 รอบ</div>
+</div>
+<div class="ex-illus">
+<svg width="280" height="130" viewBox="0 0 280 130" fill="none">
+<rect x="10" y="10" width="260" height="110" rx="12" fill="#E8FAF0"/>
+<!-- Stage 1: Sit -->
+<text x="55" y="30" text-anchor="middle" font-size="11" fill="#27AE60" font-weight="bold">① นั่ง</text>
+<text x="55" y="90" text-anchor="middle" font-size="40">🧑‍🦽</text>
+<!-- Arrow -->
+<text x="100" y="75" font-size="22" fill="#27AE60">→</text>
+<!-- Stage 2: Stand with support -->
+<text x="145" y="30" text-anchor="middle" font-size="11" fill="#27AE60" font-weight="bold">② ยืนจับราว</text>
+<!-- Person standing with rail -->
+<rect x="165" y="50" width="6" height="65" rx="3" fill="#9CA3AF"/>
+<rect x="120" y="50" width="50" height="4" rx="2" fill="#9CA3AF"/>
+<circle cx="145" cy="55" r="12" fill="#FCD9A8" stroke="#E8A87C" stroke-width="1.5"/>
+<line x1="145" y1="67" x2="145" y2="95" stroke="#FCD9A8" stroke-width="6" stroke-linecap="round"/>
+<line x1="145" y1="75" x2="163" y2="60" stroke="#FCD9A8" stroke-width="4" stroke-linecap="round"/>
+<line x1="145" y1="80" x2="130" y2="70" stroke="#FCD9A8" stroke-width="4" stroke-linecap="round"/>
+<line x1="145" y1="95" x2="135" y2="115" stroke="#FCD9A8" stroke-width="4" stroke-linecap="round"/>
+<line x1="145" y1="95" x2="155" y2="115" stroke="#FCD9A8" stroke-width="4" stroke-linecap="round"/>
+<!-- Arrow -->
+<text x="190" y="75" font-size="22" fill="#27AE60">→</text>
+<!-- Stage 3: Walk -->
+<text x="238" y="30" text-anchor="middle" font-size="11" fill="#27AE60" font-weight="bold">③ เดิน</text>
+<text x="238" y="90" text-anchor="middle" font-size="40">🚶</text>
+</svg>
+</div>
+<div class="ex-steps">
+<div class="ex-step"><div class="ex-num">1</div><span><strong>ฝึกนั่งขอบเตียง</strong> ห้อยขาลงพื้น ทรงตัวโดยไม่จับอะไร 1–2 นาที</span></div>
+<div class="ex-step"><div class="ex-num">2</div><span><strong>ฝึกยืน</strong> จับราวหรือมีผู้ช่วยพยุง ยืนค้างไว้ 30 วินาที ค่อยๆ เพิ่มเวลา</span></div>
+<div class="ex-step"><div class="ex-num">3</div><span><strong>ฝึกเดิน</strong> เดินระยะสั้น มีผู้ช่วยหรือ Walker เพิ่มระยะทีละน้อยทุกวัน</span></div>
+</div>
+</div>
+
+<!-- ปาก/การพูด -->
+<div class="ex-card">
+<div class="ex-hd">
+<span class="ex-hd-icon">👄</span>
+<div class="ex-hd-text">
+<div class="ex-title">บริหารกล้ามเนื้อปากและลิ้น</div>
+<div class="ex-sub">ช่วยการพูดและการกลืน</div>
+</div>
+<div class="ex-badge">ทำทุก 2 ชม.</div>
+</div>
+<div class="ex-illus">
+<svg width="280" height="110" viewBox="0 0 280 110" fill="none">
+<rect x="10" y="10" width="260" height="90" rx="12" fill="#FFF4E0"/>
+<!-- Face 1: Say "A" -->
+<circle cx="50" cy="55" r="30" fill="#FDE68A" stroke="#F59E0B" stroke-width="2"/>
+<ellipse cx="50" cy="67" rx="12" ry="14" fill="#FCA5A5"/>
+<text x="50" y="30" text-anchor="middle" font-size="12" fill="#E8870A" font-weight="bold">อา</text>
+
+<!-- Face 2: Pucker "Ee" -->
+<circle cx="140" cy="55" r="30" fill="#FDE68A" stroke="#F59E0B" stroke-width="2"/>
+<ellipse cx="140" cy="68" rx="16" ry="6" fill="#FCA5A5"/>
+<text x="140" y="30" text-anchor="middle" font-size="12" fill="#E8870A" font-weight="bold">อี</text>
+
+<!-- Face 3: Puff cheeks "Oo" -->
+<circle cx="230" cy="55" r="30" fill="#FDE68A" stroke="#F59E0B" stroke-width="2"/>
+<ellipse cx="215" cy="55" rx="12" ry="10" fill="#FDE68A" stroke="#F59E0B" stroke-width="1.5"/>
+<ellipse cx="245" cy="55" rx="12" ry="10" fill="#FDE68A" stroke="#F59E0B" stroke-width="1.5"/>
+<ellipse cx="230" cy="68" rx="8" ry="8" fill="#FCA5A5"/>
+<text x="230" y="30" text-anchor="middle" font-size="12" fill="#E8870A" font-weight="bold">อือ</text>
+</svg>
+</div>
+<div class="ex-steps">
+<div class="ex-step"><div class="ex-num">1</div><span>ออกเสียง <strong>"อา — อี — อือ"</strong> ช้าๆ ชัดๆ 10 รอบ ทำทุก 2 ชั่วโมง</span></div>
+<div class="ex-step"><div class="ex-num">2</div><span><strong>แลบลิ้น</strong> ออกมาให้สุด ค้างไว้ 3 วินาที 10 ครั้ง</span></div>
+<div class="ex-step"><div class="ex-num">3</div><span><strong>ห่อปาก</strong> เป่าลมออก 10 ครั้ง ช่วยกล้ามเนื้อปากแข็งแรง</span></div>
+</div>
+</div>
+
+</div>
+
+<!-- PT SECTION -->
+<div class="pt-section">
+<div class="pt-title">🏥 กายภาพบำบัดที่โรงพยาบาล</div>
+
+<div class="pt-card">
+<div class="pt-hd">⏱️ ควรเริ่มกายภาพเมื่อไหร่?</div>
+<div class="pt-illus">
+<svg width="260" height="100" viewBox="0 0 260 100" fill="none">
+<!-- Timeline -->
+<line x1="20" y1="50" x2="240" y2="50" stroke="#D4E8E5" stroke-width="3"/>
+<!-- Points -->
+<circle cx="40" cy="50" r="14" fill="#0D7C6E"/>
+<text x="40" y="55" text-anchor="middle" font-size="10" fill="white" font-weight="bold">24 ชม.</text>
+<text x="40" y="80" text-anchor="middle" font-size="10" fill="#0D7C6E" font-weight="bold">เริ่มบน เตียง</text>
+
+<circle cx="110" cy="50" r="14" fill="#27AE60"/>
+<text x="110" y="55" text-anchor="middle" font-size="10" fill="white" font-weight="bold">3-5 วัน</text>
+<text x="110" y="80" text-anchor="middle" font-size="10" fill="#27AE60" font-weight="bold">ลุก-นั่ง</text>
+
+<circle cx="180" cy="50" r="14" fill="#F59E0B"/>
+<text x="180" y="55" text-anchor="middle" font-size="10" fill="white" font-weight="bold">1 สัปดาห์</text>
+<text x="180" y="80" text-anchor="middle" font-size="10" fill="#F59E0B" font-weight="bold">ยืน-เดิน</text>
+
+<circle cx="240" cy="50" r="14" fill="#E8870A"/>
+<text x="240" y="55" text-anchor="middle" font-size="9" fill="white" font-weight="bold">ต่อเนื่อง</text>
+<text x="240" y="80" text-anchor="middle" font-size="10" fill="#E8870A" font-weight="bold">ที่บ้าน</text>
+
+<!-- Arrow heads -->
+<text x="55" y="54" font-size="12" fill="#D4E8E5">→</text>
+<text x="125" y="54" font-size="12" fill="#D4E8E5">→</text>
+<text x="195" y="54" font-size="12" fill="#D4E8E5">→</text>
+</svg>
+</div>
+<div class="pt-body">เริ่มกายภาพบำบัดเร็วที่สุดเท่าที่เป็นไปได้ หลัง 24 ชั่วโมงแรก ยิ่งเริ่มเร็วยิ่งฟื้นตัวได้ดีค่ะ</div>
+</div>
+
+<div class="pt-card">
+<div class="pt-hd">📋 สิ่งที่ต้องทำก่อนนัดกายภาพ</div>
+<div class="pt-body">
+✅ บอกนักกายภาพว่า "ทำอะไรได้บ้าง และทำอะไรไม่ได้"<br>
+✅ แจ้งอาการปวด เกร็ง หรือกลัวล้ม<br>
+✅ ใส่เสื้อผ้าที่ขยับตัวได้สะดวก<br>
+✅ กินอาหารก่อนมา อย่ามาท้องว่าง<br>
+✅ พาญาติมาด้วย เพื่อจะได้เรียนรู้วิธีช่วยที่บ้าน
+</div>
+</div>
+
+<div class="pt-card">
+<div class="pt-hd">🏠 ทำกายภาพที่บ้าน — สำคัญมาก</div>
+<div class="pt-body">
+นักกายภาพพบผู้ป่วยสัปดาห์ละ 3–5 ครั้ง แต่ผู้ป่วยต้องฝึกที่บ้านทุกวัน<br><br>
+<strong>หลักการ 3 ข้อ:</strong><br>
+1️⃣ <strong>ทำซ้ำ</strong> — ยิ่งทำมาก สมองยิ่งสร้างเส้นทางใหม่ได้เร็ว<br>
+2️⃣ <strong>สม่ำเสมอ</strong> — ทำทุกวัน ดีกว่าทำหนักวันเดียวแล้วหยุด<br>
+3️⃣ <strong>ค่อยเป็นค่อยไป</strong> — เพิ่มจำนวนครั้งและความยากทีละน้อย
+</div>
+</div>
+
+</div>
+
+<!-- STOP SIGNS -->
+<div class="ex-warn" style="margin:14px 12px">
+<div class="ex-warn-title">🛑 หยุดออกกำลังกายทันที ถ้า...</div>
+❤️ ชีพจร &gt; 120 หรือ &lt; 50 ครั้ง/นาที<br>
+🩺 ความดัน &gt; 180/110 mmHg ก่อนออกกำลัง<br>
+😵 เวียนหัว หน้ามืด หายใจไม่ออก<br>
+🤕 ปวดหน้าอก ปวดข้อรุนแรง<br>
+😰 แขนขาอ่อนแรงเพิ่มขึ้นชัดเจน<br><br>
+<strong>→ นั่งพัก แล้วมา รพ. ก่อนนัดได้เลยค่ะ</strong>
+</div>
+
+<div style="height:16px"></div>
+</div>
+
+<div class="footer">
+🧠 SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์<br>
+💬 LINE OA: SPS Stroke Care · สอบถาม 24 ชม.<br>
+<span style="opacity:.7;font-size:11px">⚠️ ปรึกษาแพทย์/นักกายภาพก่อนเริ่มออกกำลังกาย</span>
+</div>
+
+<script>
+function showTab(id, btn) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
