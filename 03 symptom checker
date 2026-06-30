@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ประเมินอาการ — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Kanit:wght@600;700&display=swap');
+
+:root {
+--teal:#0D7C6E; --teal-lt:#E2F5F3; --teal-pale:#F0FAF9;
+--red:#D63031; --red-lt:#FDE8E8;
+--amber:#E8870A; --amber-lt:#FFF4E0;
+--green:#27AE60; --green-lt:#E9F8EF;
+--blue:#2563EB; --blue-lt:#EFF6FF;
+--purple:#7C3AED; --purple-lt:#F5F3FF;
+--ink:#1C2B2A; --ink-s:#3D5250; --muted:#718E8C;
+--rule:#D4E8E5; --bg:#F5FAF9;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;}
+
+/* HEADER */
+.hdr{background:var(--teal);padding:12px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(13,124,110,0.25);}
+.hdr-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hdr-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:white;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.8);margin-top:1px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--teal),#1A9F8F);padding:20px 16px;color:white;}
+.hero-title{font-family:'Kanit',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.hero-desc{font-size:13px;opacity:.88;line-height:1.6;}
+.hero-tags{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;}
+.hero-tag{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);color:white;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+
+/* MAIN MENU */
+.main-menu{padding:16px;}
+.menu-title{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--teal);margin-bottom:12px;}
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.prob-card{background:white;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);border:1.5px solid var(--rule);cursor:pointer;transition:all .15s;text-align:center;}
+.prob-card:hover{border-color:var(--teal);box-shadow:0 4px 16px rgba(13,124,110,0.15);}
+.prob-card:active{transform:scale(.97);}
+.prob-icon{font-size:36px;margin-bottom:8px;}
+.prob-name{font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;color:var(--ink);line-height:1.3;}
+.prob-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* DETAIL PAGE */
+.detail{display:none;padding:0 0 24px;}
+.detail.show{display:block;}
+.back-btn{display:flex;align-items:center;gap:6px;padding:12px 16px;font-family:'Kanit',sans-serif;font-size:14px;font-weight:600;color:var(--teal);cursor:pointer;background:white;border-bottom:1px solid var(--rule);}
+
+/* SECTION */
+.sec{padding:14px 16px 0;}
+.sec-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.sec-icon{font-size:22px;}
+.sec-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;}
+
+/* DECISION BOX */
+.dec-box{border-radius:14px;padding:14px 16px;margin:0 16px 12px;}
+.dec-box.go{background:var(--red-lt);border:2px solid #F5AAAA;}
+.dec-box.wait{background:#EFF6FF;border:2px solid #93C5FD;}
+.dec-box.ok{background:var(--green-lt);border:2px solid #A8E4C0;}
+.dec-title{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.dec-box.go .dec-title{color:var(--red);}
+.dec-box.wait .dec-title{color:#1D4ED8;}
+.dec-box.ok .dec-title{color:var(--green);}
+.dec-body{font-size:14px;color:var(--ink-s);line-height:1.65;}
+.dec-body ul{padding-left:16px;margin-top:4px;}
+.dec-body li{margin-bottom:4px;}
+.call-btn{margin-top:12px;background:var(--red);color:white;border:none;border-radius:10px;padding:11px 16px;width:100%;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* STEPS */
+.steps{padding:0 16px;display:flex;flex-direction:column;gap:8px;}
+.step{background:white;border-radius:12px;padding:12px 14px;box-shadow:0 2px 6px rgba(0,0,0,0.06);border:1px solid var(--rule);display:flex;gap:10px;align-items:flex-start;}
+.snum{width:28px;height:28px;border-radius:50%;background:var(--teal-lt);color:var(--teal);font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stxt{font-size:14px;color:var(--ink-s);line-height:1.6;}
+.stxt strong{color:var(--ink);}
+
+/* DRUG TABLE */
+.drug-table{margin:0 16px;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
+.drug-hd{display:grid;grid-template-columns:2fr 3fr 2fr;background:var(--teal);padding:10px 12px;gap:8px;}
+.drug-hd span{font-family:'Kanit',sans-serif;font-size:12px;font-weight:700;color:white;}
+.drug-row{display:grid;grid-template-columns:2fr 3fr 2fr;padding:10px 12px;gap:8px;border-bottom:1px solid var(--rule);background:white;font-size:13px;color:var(--ink-s);align-items:start;}
+.drug-row:last-child{border-bottom:none;}
+.drug-row:nth-child(odd){background:var(--teal-pale);}
+.drug-name{font-weight:700;color:var(--ink);}
+.drug-action{color:var(--teal);font-weight:600;}
+.drug-warn{color:var(--amber);font-weight:600;font-size:12px;}
+
+/* ALERT */
+.alert-box{margin:0 16px 12px;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;}
+.alert-box.info{background:var(--teal-lt);border:1.5px solid #A0D8D3;}
+.alert-box.warn{background:var(--amber-lt);border:1.5px solid #F5C87A;}
+.alert-box.danger{background:var(--red-lt);border:1.5px solid #F5AAAA;}
+.al-icon{font-size:20px;flex-shrink:0;}
+.al-title{font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;}
+.alert-box.info .al-title{color:var(--teal);}
+.alert-box.warn .al-title{color:var(--amber);}
+.alert-box.danger .al-title{color:var(--red);}
+.al-body{font-size:13px;color:var(--ink-s);line-height:1.55;}
+
+/* EMERGENCY BANNER */
+.emergency{margin:12px 16px;background:var(--red);border-radius:16px;padding:14px 16px;color:white;}
+.em-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;margin-bottom:8px;}
+.em-list{font-size:14px;line-height:1.7;padding-left:16px;}
+.em-call{margin-top:12px;background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);border-radius:10px;padding:10px;text-align:center;font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;}
+
+/* SPACER */
+.sp{height:16px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+<div class="hdr-icon">🏥</div>
+<div>
+<div class="hdr-title">ประเมินอาการ — ดูแลเองหรือมา รพ.?</div>
+<div class="hdr-sub">SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์</div>
+</div>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="mainPage">
+<div class="hero">
+<div class="hero-title">🏠 ปัญหาที่บ้าน<br>รับมืออย่างไร?</div>
+<div class="hero-desc">กดเลือกปัญหาที่พบ ระบบจะแนะนำว่าดูแลเองได้ หรือต้องมา รพ. ทันที</div>
+<div class="hero-tags">
+<span class="hero-tag">👨‍👩‍👧 ผู้ดูแล/ญาติ</span>
+<span class="hero-tag">🏠 ใช้ที่บ้าน</span>
+<span class="hero-tag">⚡ ตัดสินใจเร็ว</span>
+</div>
+</div>
+
+<div class="main-menu">
+<div class="menu-title">⚠️ เลือกปัญหาที่พบ</div>
+<div class="prob-grid">
+<div class="prob-card" onclick="show('fever')">
+<div class="prob-icon">🌡️</div>
+<div class="prob-name">มีไข้</div>
+<div class="prob-sub">ตัวร้อน อุณหภูมิสูง</div>
+</div>
+<div class="prob-card" onclick="show('pneumonia')">
+<div class="prob-icon">🫁</div>
+<div class="prob-name">ปอดอักเสบ<br>ติดเชื้อ</div>
+<div class="prob-sub">ไอมาก หายใจลำบาก</div>
+</div>
+<div class="prob-card" onclick="show('noeat')">
+<div class="prob-icon">🍽️</div>
+<div class="prob-name">กินอาหาร<br>ไม่ได้</div>
+<div class="prob-sub">น้ำหนักลด อ่อนแรง</div>
+</div>
+<div class="prob-card" onclick="show('seizure')">
+<div class="prob-icon">⚡</div>
+<div class="prob-name">ชัก / หมดสติ</div>
+<div class="prob-sub">กล้ามเนื้อกระตุก</div>
+</div>
+<div class="prob-card" onclick="show('drug')">
+<div class="prob-icon">💊</div>
+<div class="prob-name">ลืมกินยา</div>
+<div class="prob-sub">ข้ามมื้อ / ยาหมด</div>
+</div>
+<div class="prob-card" onclick="show('wound2')">
+<div class="prob-icon">🩹</div>
+<div class="prob-name">แผลกดทับ<br>แย่ลง</div>
+<div class="prob-sub">แผลลึก มีกลิ่น</div>
+</div>
+<div class="prob-card" onclick="show('constipation')">
+<div class="prob-icon">🚽</div>
+<div class="prob-name">ท้องผูก /<br>ปัสสาวะผิดปกติ</div>
+<div class="prob-sub">ไม่ถ่าย ปัสสาวะแสบ</div>
+</div>
+<div class="prob-card" onclick="show('bp')">
+<div class="prob-icon">🩺</div>
+<div class="prob-name">ความดันผิดปกติ</div>
+<div class="prob-sub">สูงมาก หรือต่ำมาก</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ══ DETAIL PAGES ══ -->
+
+<!-- 1. ไข้ -->
+<div class="detail" id="fever">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#B45309,#D97706)">
+<div class="hero-title">🌡️ มีไข้</div>
+<div class="hero-desc">ประเมินระดับความรุนแรงก่อนตัดสินใจค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="dec-box go" style="margin:0 16px 12px">
+<div class="dec-title">🚨 มา รพ. ทันที ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไข้ ≥ 39°C แม้กินยาลดไข้แล้วไม่ลด</li>
+<li>ไข้ + หายใจเร็ว หอบ SpO2 &lt; 94%</li>
+<li>ไข้ + ซึมลง เรียกไม่ตื่น</li>
+<li>ไข้ + ชัก หรือหมดสติ</li>
+<li>ไข้ + ปัสสาวะขุ่น มีกลิ่นฉุน ปวดเอว</li>
+<li>ไข้ หลังใส่สายสวนปัสสาวะหรือ NG tube</li>
+</ul></div>
+<button class="call-btn" onclick="window.location.href='tel:1669'">📞 โทร 1669 ฉุกเฉิน</button>
+</div>
+
+<div class="dec-box wait" style="margin:0 16px 12px">
+<div class="dec-title">🏥 มา รพ. ก่อนนัดได้เลย ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไข้ 38–38.9°C ต่อเนื่อง > 2 วัน</li>
+<li>ไข้ + ไอมีเสมหะเพิ่มขึ้น</li>
+<li>ไข้ + แผลกดทับบวมแดงเพิ่ม</li>
+</ul></div>
+</div>
+
+<div class="dec-box ok" style="margin:0 16px 12px">
+<div class="dec-title">✅ ดูแลเองที่บ้านได้ ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไข้ต่ำ 37.5–37.9°C</li>
+<li>กินยา Paracetamol แล้วไข้ลด</li>
+<li>ยังรู้สึกตัวดี กินน้ำได้</li>
+</ul></div>
+</div>
+
+<div class="sec"><div class="sec-hd"><span class="sec-icon">💊</span><span class="sec-title">วิธีดูแลเบื้องต้น</span></div></div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="stxt"><strong>วัดไข้</strong> ใช้ปรอทวัดทางรักแร้หรือหน้าผาก บันทึกตัวเลขและเวลา</div></div>
+<div class="step"><div class="snum">2</div><div class="stxt"><strong>Paracetamol</strong> 500 mg กิน 1–2 เม็ด ทุก 4–6 ชม. ห้ามเกิน 8 เม็ด/วัน</div></div>
+<div class="step"><div class="snum">3</div><div class="stxt"><strong>เช็ดตัวด้วยน้ำอุ่น</strong> บริเวณรักแร้ ขาหนีบ คอ ทำซ้ำทุก 30 นาที</div></div>
+<div class="step"><div class="snum">4</div><div class="stxt"><strong>ดื่มน้ำมากๆ</strong> อย่างน้อย 8–10 แก้ว/วัน ถ้ากลืนลำบากให้ทางสายยาง</div></div>
+<div class="step"><div class="snum">5</div><div class="stxt"><strong>ติดตามอาการ</strong> ทุก 2 ชม. ถ้าไข้ไม่ลดใน 2 ชม. หลังกินยา ให้มา รพ. ก่อนนัดได้เลยค่ะ</div></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 2. ปอดอักเสบ -->
+<div class="detail" id="pneumonia">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#7C3AED,#9D5CE5)">
+<div class="hero-title">🫁 ปอดอักเสบ / ติดเชื้อ</div>
+<div class="hero-desc">ภาวะนี้อันตราย ต้องประเมินให้เร็วค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="emergency" style="margin:0 16px 12px">
+<div class="em-title">🚨 มา รพ. ทันที ถ้ามีอาการเหล่านี้</div>
+<ul class="em-list">
+<li>หายใจเร็ว &gt; 25 ครั้ง/นาที หรือหอบ</li>
+<li>SpO2 &lt; 94% (ถ้ามีเครื่องวัด)</li>
+<li>ริมฝีปากหรือปลายนิ้วเขียวคล้ำ</li>
+<li>ไข้ &gt; 39°C + ไอมีเสมหะสีเขียว/น้ำตาล</li>
+<li>ซึมลง ไม่ตอบสนอง</li>
+<li>ความดันตก &lt; 90/60 mmHg</li>
+</ul>
+<div class="em-call">📞 1669 — อย่ารอดูอาการ</div>
+</div>
+
+<div class="dec-box wait" style="margin:0 16px 12px">
+<div class="dec-title">🏥 มา รพ. ก่อนนัดได้เลย ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไอมากขึ้น เสมหะเปลี่ยนสี</li>
+<li>มีไข้ต่ำ + อ่อนเพลียมากขึ้น</li>
+<li>เพิ่งสำลักอาหาร/น้ำ ภายใน 24–48 ชม.</li>
+</ul></div>
+</div>
+
+<div class="sec"><div class="sec-hd"><span class="sec-icon">🛡️</span><span class="sec-title">ป้องกันปอดอักเสบซ้ำ</span></div></div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="stxt"><strong>ยกหัวเตียงสูง 30–45 องศา</strong> ตลอดเวลา โดยเฉพาะขณะให้อาหาร</div></div>
+<div class="step"><div class="snum">2</div><div class="stxt"><strong>ทำความสะอาดช่องปาก</strong> ก่อน-หลังมื้ออาหาร ลดแบคทีเรียในปาก</div></div>
+<div class="step"><div class="snum">3</div><div class="stxt"><strong>ประเมินการกลืนก่อนทุกมื้อ</strong> ถ้าสำลักให้หยุดและแจ้งพยาบาล</div></div>
+<div class="step"><div class="snum">4</div><div class="stxt"><strong>พลิกตะแคงตัวทุก 2 ชม.</strong> ช่วยระบายเสมหะและป้องกันปอดแฟบ</div></div>
+<div class="step"><div class="snum">5</div><div class="stxt"><strong>หายใจลึกๆ</strong> ให้ผู้ป่วยหายใจเข้าลึกๆ 10 ครั้ง ทุก 2 ชม. ถ้าทำได้</div></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 3. กินอาหารไม่ได้ -->
+<div class="detail" id="noeat">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#059669,#10B981)">
+<div class="hero-title">🍽️ กินอาหารไม่ได้ / น้ำหนักลด</div>
+<div class="hero-desc">ประเมินสาเหตุและความรุนแรงค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="dec-box go" style="margin:0 16px 12px">
+<div class="dec-title">🚨 มา รพ. ทันที ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไม่กินอาหาร/น้ำ &gt; 24 ชม. ร่วมกับซึมลง</li>
+<li>อาเจียนทุกมื้อ ท้องอืดมาก</li>
+<li>น้ำหนักลด &gt; 3 กก. ใน 1 สัปดาห์</li>
+<li>สายยาง (NG) หลุด/อุดตัน ใส่เองไม่ได้</li>
+<li>ปัสสาวะน้อยมาก ปากแห้งมาก (ขาดน้ำรุนแรง)</li>
+</ul></div>
+<button class="call-btn" onclick="window.location.href='tel:1669'">📞 1669 — ฉุกเฉิน</button>
+</div>
+
+<div class="dec-box wait" style="margin:0 16px 12px">
+<div class="dec-title">🏥 มา รพ. ก่อนนัดได้เลย ถ้า...</div>
+<div class="dec-body"><ul>
+<li>กินได้น้อยลงเรื่อยๆ ติดต่อกัน 3–5 วัน</li>
+<li>สายยาง NG อาหารค้างมาก (Residual &gt; 150 ml)</li>
+<li>กลืนลำบากขึ้น ไอหลังกินทุกมื้อ</li>
+</ul></div>
+</div>
+
+<div class="dec-box ok" style="margin:0 16px 12px">
+<div class="dec-title">✅ ปรับได้เองที่บ้าน ถ้า...</div>
+<div class="dec-body"><ul>
+<li>กินได้น้อยลงเพราะเบื่ออาหาร แต่ยังกินได้บ้าง</li>
+<li>ลองปรับเนื้ออาหารให้นุ่มขึ้น หรือเพิ่มความหลากหลาย</li>
+<li>แบ่งมื้ออาหารเป็น 5–6 มื้อเล็กๆ แทน 3 มื้อใหญ่</li>
+</ul></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 4. ชัก / หมดสติ -->
+<div class="detail" id="seizure">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#DC2626,#EF4444)">
+<div class="hero-title">⚡ ชัก / หมดสติ</div>
+<div class="hero-desc">🚨 ฉุกเฉินสูงสุด — ต้องโทร 1669 ทันที</div>
+</div>
+
+<div class="sp"></div>
+<div class="emergency" style="margin:0 16px 12px">
+<div class="em-title">🚨 โทร 1669 ทันที แล้วทำตามนี้</div>
+<ul class="em-list">
+<li>วางผู้ป่วยนอนตะแคง ป้องกันสำลัก</li>
+<li>ล้างของออกรอบตัว ป้องกันการบาดเจ็บ</li>
+<li>ห้ามจับยึดหรืองัดปาก</li>
+<li>ห้ามใส่อะไรเข้าปาก</li>
+<li>จับเวลาชัก ถ้า &gt; 5 นาที อันตรายมาก</li>
+<li>ถ้าหมดสติไม่หายใจ → CPR ทันที</li>
+</ul>
+<div class="em-call">📞 1669 — ฉุกเฉิน</div>
+</div>
+
+<div class="alert-box warn" style="margin:0 16px 12px">
+<span class="al-icon">⚠️</span>
+<div>
+<div class="al-title">หลังชักหยุดแล้ว</div>
+<div class="al-body">ยังต้องพาไปพบแพทย์เสมอ แม้ผู้ป่วยจะรู้สึกตัวดีขึ้นแล้ว เพราะอาจเกิดซ้ำได้ค่ะ</div>
+</div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 5. ลืมกินยา -->
+<div class="detail" id="drug">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">
+<div class="hero-title">💊 ลืมกินยา</div>
+<div class="hero-desc">แต่ละยามีวิธีจัดการต่างกัน ดูตารางด้านล่างค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="alert-box info" style="margin:0 16px 12px">
+<span class="al-icon">💡</span>
+<div>
+<div class="al-title">หลักการทั่วไป</div>
+<div class="al-body">ถ้านึกขึ้นได้ภายใน <strong>ครึ่งหนึ่งของช่วงเวลา</strong> ให้กินทันที แต่ <strong>ห้ามกินเพิ่มเป็น 2 เท่า</strong> ในมื้อถัดไปเด็ดขาดค่ะ</div>
+</div>
+</div>
+
+<div class="drug-table">
+<div class="drug-hd">
+<span>ชื่อยา</span>
+<span>ถ้าลืม — ทำอย่างไร</span>
+<span>⚠️ ระวัง</span>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Aspirin</div><div style="font-size:11px;color:var(--muted)">(ต้านเกล็ดเลือด)</div></div>
+<div class="drug-action">กินทันทีที่นึกได้ ถ้าใกล้มื้อถัดไป (&lt; 4 ชม.) ข้ามไปได้เลย กินมื้อถัดไปปกติ</div>
+<div class="drug-warn">ห้ามกิน 2 เม็ดพร้อมกัน เสี่ยงเลือดออก</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Clopidogrel</div><div style="font-size:11px;color:var(--muted)">(ต้านเกล็ดเลือด)</div></div>
+<div class="drug-action">กินทันทีที่นึกได้ ถ้าใกล้มื้อถัดไป (&lt; 6 ชม.) ข้ามไปได้เลย</div>
+<div class="drug-warn">ห้ามหยุดยาเองโดยเด็ดขาด เสี่ยง Stroke ซ้ำ</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Atorvastatin / Rosuvastatin</div><div style="font-size:11px;color:var(--muted)">(ลดไขมัน)</div></div>
+<div class="drug-action">กินทันทีที่นึกได้ในวันเดียวกัน ถ้าข้ามวันแล้ว ข้ามมื้อนั้นไปเลย กินปกติวันถัดไป</div>
+<div class="drug-warn">ลืม 1 วันไม่อันตราย แต่อย่าลืมต่อเนื่อง</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Amlodipine</div><div style="font-size:11px;color:var(--muted)">(ลดความดัน)</div></div>
+<div class="drug-action">กินทันทีที่นึกได้ ถ้าใกล้มื้อถัดไป (&lt; 12 ชม.) ข้ามไปได้เลย</div>
+<div class="drug-warn">วัด BP ก่อน ถ้า &gt; 180/110 มา รพ. ก่อนนัดได้เลย</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Enalapril / Losartan</div><div style="font-size:11px;color:var(--muted)">(ลดความดัน)</div></div>
+<div class="drug-action">กินทันทีที่นึกได้ในวันเดียวกัน ถ้าข้ามวันแล้ว ข้ามมื้อนั้นไปเลย</div>
+<div class="drug-warn">วัด BP ก่อนและหลังกินยา</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Warfarin</div><div style="font-size:11px;color:var(--muted)">(กันลิ่มเลือด)</div></div>
+<div class="drug-action">กินทันทีในวันเดียวกัน ถ้าข้ามวันแล้ว ข้ามมื้อนั้นไปเลย กินปกติวันถัดไป</div>
+<div class="drug-warn">⚠️ ห้ามกิน 2 วันรวมกัน เสี่ยงเลือดออกรุนแรง ต้องตรวจ INR ตามนัดเสมอ</div>
+</div>
+<div class="drug-row">
+<div><div class="drug-name">Metformin / ยาเบาหวาน</div><div style="font-size:11px;color:var(--muted)">(ถ้ามีเบาหวาน)</div></div>
+<div class="drug-action">กินทันทีพร้อมอาหาร ถ้าผ่านมื้ออาหารนั้นแล้ว ข้ามไปได้เลย</div>
+<div class="drug-warn">วัดน้ำตาล ถ้า &gt; 300 mg/dL มา รพ. ก่อนนัดได้เลย</div>
+</div>
+</div>
+
+<div class="sp"></div>
+<div class="alert-box danger" style="margin:0 16px 12px">
+<span class="al-icon">🚨</span>
+<div>
+<div class="al-title">ยาหมด — ต้องทำทันที</div>
+<div class="al-body">ห้ามหยุดยาเองโดยเด็ดขาด โดยเฉพาะ Aspirin, Clopidogrel, Warfarin<br><br>→ ติดต่อ รพ. เพื่อขอใบสั่งยาฉุกเฉิน หรือไปที่ห้องยาผู้ป่วยนอก แจ้งว่าเป็นผู้ป่วย Stroke ที่ต้องได้ยาต่อเนื่องค่ะ</div>
+</div>
+</div>
+
+<div class="sec"><div class="sec-hd"><span class="sec-icon">⏰</span><span class="sec-title">วิธีป้องกันการลืมยา</span></div></div>
+<div class="steps">
+<div class="step"><div class="snum">1</div><div class="stxt"><strong>ตั้งนาฬิกาเตือน</strong> ในมือถือให้ตรงเวลากินยาทุกวัน</div></div>
+<div class="step"><div class="snum">2</div><div class="stxt"><strong>ใช้กล่องยารายสัปดาห์</strong> (Pill organizer) แบ่งยาล่วงหน้าทุกอาทิตย์</div></div>
+<div class="step"><div class="snum">3</div><div class="stxt"><strong>วางยาให้เห็นง่าย</strong> ข้างโต๊ะอาหาร หรือข้างแก้วน้ำที่ใช้ประจำ</div></div>
+<div class="step"><div class="snum">4</div><div class="stxt"><strong>ให้ญาติช่วยเตือน</strong> มอบหมายคนดูแลยา 1 คนในบ้าน</div></div>
+<div class="step"><div class="snum">5</div><div class="stxt"><strong>รับยาก่อนหมด 7 วัน</strong> อย่ารอให้ยาหมดค่อยไปรับ</div></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 6. แผลกดทับแย่ลง -->
+<div class="detail" id="wound2">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#92400E,#B45309)">
+<div class="hero-title">🩹 แผลกดทับแย่ลง</div>
+<div class="hero-desc">ประเมิน Stage และตัดสินใจค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="dec-box go" style="margin:0 16px 12px">
+<div class="dec-title">🚨 มา รพ. ทันที ถ้า...</div>
+<div class="dec-body"><ul>
+<li>แผลลึก เห็นเนื้อเยื่อสีเหลือง/ดำ (Stage 3-4)</li>
+<li>แผลมีกลิ่นเหม็นรุนแรง มีหนองไหล</li>
+<li>รอบแผลบวมแดงร้อน ขยายกว้างขึ้นทุกวัน</li>
+<li>มีไข้ร่วมกับแผลแย่ลง (ติดเชื้อในกระแสเลือด)</li>
+</ul></div>
+<button class="call-btn" onclick="window.location.href='tel:1669'">📞 1669 — ER ฉุกเฉิน</button>
+</div>
+
+<div class="dec-box wait" style="margin:0 16px 12px">
+<div class="dec-title">🏥 มา รพ. ก่อนนัดได้เลย — ให้แพทย์ดูแผล</div>
+<div class="dec-body"><ul>
+<li>แผลตื้น ผิวหนังลอก มีตุ่มน้ำ (Stage 2)</li>
+<li>แผลไม่หายดีขึ้นใน 1 สัปดาห์</li>
+</ul></div>
+</div>
+
+<div class="dec-box ok" style="margin:0 16px 12px">
+<div class="dec-title">✅ ทำแผลเองที่บ้านได้ ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ผิวหนังแดง แต่กดแล้วจาง ยังไม่มีแผล (Stage 1)</li>
+<li>ทำความสะอาด ลดแรงกด พลิกตะแคงบ่อยขึ้น</li>
+</ul></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 7. ท้องผูก/ปัสสาวะ -->
+<div class="detail" id="constipation">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">
+<div class="hero-title">🚽 ท้องผูก / ปัสสาวะผิดปกติ</div>
+<div class="hero-desc">พบบ่อยในผู้ป่วย Stroke ดูแลได้ค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="dec-box go" style="margin:0 16px 12px">
+<div class="dec-title">🚨 มา รพ. ทันที ถ้า...</div>
+<div class="dec-body"><ul>
+<li>ไม่ถ่ายอุจจาระ &gt; 5 วัน ท้องอืดแข็งมาก</li>
+<li>ปัสสาวะมีเลือดปน หรือหยุดปัสสาวะ</li>
+<li>ปวดท้องรุนแรง อาเจียน มีไข้</li>
+<li>สายสวนปัสสาวะอุดตัน ปัสสาวะไม่ออก</li>
+</ul></div>
+</div>
+
+<div class="dec-box ok" style="margin:0 16px 12px">
+<div class="dec-title">✅ ดูแลเองที่บ้านได้</div>
+<div class="dec-body"><ul>
+<li>ดื่มน้ำ 8–10 แก้ว/วัน</li>
+<li>รับประทานผักผลไม้ที่มีกากใยมากขึ้น</li>
+<li>ออกกำลังกายเบาๆ นวดท้องตามเข็มนาฬิกา</li>
+<li>ถ้าแพทย์สั่ง Lactulose/ยาระบาย ให้กินตามสั่ง</li>
+<li>ปัสสาวะขุ่นเล็กน้อย ให้ดื่มน้ำมากขึ้น 1–2 วัน</li>
+</ul></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- 8. ความดันผิดปกติ -->
+<div class="detail" id="bp">
+<div class="back-btn" onclick="back()">‹ กลับ</div>
+<div class="hero" style="background:linear-gradient(135deg,#BE185D,#EC4899)">
+<div class="hero-title">🩺 ความดันผิดปกติ</div>
+<div class="hero-desc">ความดันสำคัญมาก ต้องวัดสม่ำเสมอค่ะ</div>
+</div>
+
+<div class="sp"></div>
+<div class="alert-box info" style="margin:0 16px 12px">
+<span class="al-icon">🎯</span>
+<div>
+<div class="al-title">เป้าหมายความดันในผู้ป่วย Stroke</div>
+<div class="al-body">ตัวบน (Systolic) &lt; 130 mmHg<br>ตัวล่าง (Diastolic) &lt; 80 mmHg<br>วัดเช้า-เย็น บันทึกทุกวันค่ะ</div>
+</div>
+</div>
+
+<div class="dec-box go" style="margin:0 16px 12px">
+<div class="dec-title">🚨 มา รพ. ทันที ถ้า...</div>
+<div class="dec-body"><ul>
+<li>BP &gt; 180/110 mmHg วัดซ้ำ 2 ครั้งห่างกัน 15 นาที</li>
+<li>BP สูง + ปวดหัวรุนแรง ตาพร่า คลื่นไส้</li>
+<li>BP สูง + แขนขาอ่อนแรง พูดไม่ชัด (BE-FAST!)</li>
+<li>BP ต่ำมาก &lt; 90/60 + เวียนศีรษะ หน้ามืด</li>
+</ul></div>
+<button class="call-btn" onclick="window.location.href='tel:1669'">📞 1669 ฉุกเฉิน</button>
+</div>
+
+<div class="dec-box wait" style="margin:0 16px 12px">
+<div class="dec-title">🏥 มา รพ. ก่อนนัดได้เลย ถ้า...</div>
+<div class="dec-body"><ul>
+<li>BP 160–179/100–109 ต่อเนื่อง &gt; 3 วัน</li>
+<li>BP ต่ำ 90–100/60–70 แต่ไม่มีอาการ</li>
+</ul></div>
+</div>
+
+<div class="dec-box ok" style="margin:0 16px 12px">
+<div class="dec-title">✅ ดูแลเองได้ ถ้า...</div>
+<div class="dec-body"><ul>
+<li>BP 130–159/80–99 ไม่มีอาการผิดปกติ</li>
+<li>วัดซ้ำหลังพักนิ่งๆ 5 นาที</li>
+<li>ตรวจสอบว่ากินยาครบหรือไม่</li>
+<li>ลดเกลือ หลีกเลี่ยงความเครียด</li>
+</ul></div>
+</div>
+<div class="sp"></div>
+</div>
+
+<!-- FOOTER -->
+<div id="footer" style="background:var(--teal);padding:14px 16px;text-align:center;color:white;margin-top:8px;">
+<div style="font-size:12px;opacity:.85;line-height:1.6">
+🧠 SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์<br>
+🚨 ฉุกเฉิน: โทร <strong>1669</strong> ได้เลยค่ะ<br>
+🏥 ไม่แน่ใจ → มา รพ. ก่อนนัดได้เสมอ อย่ารอดูอาการ<br>
+<span style="opacity:.7;font-size:11px">⚠️ คู่มือนี้ใช้ประกอบ ไม่ใช่แทนการวินิจฉัยของแพทย์</span>
+</div>
+</div>
+
+<script>
+function show(id) {
+document.getElementById('mainPage').style.display = 'none';
+document.getElementById('footer').style.display = 'none';
+document.querySelectorAll('.detail').forEach(d => d.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+window.scrollTo(0, 0);
+}
+
+function back() {
+document.querySelectorAll('.detail').forEach(d => d.classList.remove('show'));
+document.getElementById('mainPage').style.display = 'block';
+document.getElementById('footer').style.display = 'block';
+window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
