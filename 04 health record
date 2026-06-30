@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>บันทึกสุขภาพ — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap');
+
+:root {
+--teal:#0D7C6E; --teal-lt:#E2F5F3; --teal-pale:#F0FAF9;
+--red:#D63031; --red-lt:#FDE8E8;
+--amber:#E8870A; --amber-lt:#FFF4E0;
+--green:#27AE60; --green-lt:#E9F8EF;
+--blue:#2563EB; --blue-lt:#EFF6FF;
+--purple:#7C3AED; --purple-lt:#F5F3FF;
+--ink:#1C2B2A; --ink-s:#3D5250; --muted:#718E8C;
+--rule:#D4E8E5; --bg:#F5FAF9;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:32px;}
+
+/* HEADER */
+.hdr{background:var(--teal);padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(13,124,110,0.25);}
+.hdr-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hdr-info{flex:1;}
+.hdr-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:white;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.8);margin-top:1px;}
+
+/* TAB */
+.tab-bar{background:white;border-bottom:2px solid var(--rule);display:flex;}
+.tab{flex:1;padding:13px 8px;text-align:center;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
+.tab.on{color:var(--teal);border-bottom-color:var(--teal);}
+
+/* PAGE */
+.page{display:none;}
+.page.show{display:block;}
+
+/* ═══ RECORD PAGE ═══ */
+
+/* DATE BANNER */
+.date-banner{background:linear-gradient(135deg,var(--teal),#1A9F8F);padding:14px 16px;color:white;display:flex;align-items:center;justify-content:space-between;}
+.date-text{font-family:'Kanit',sans-serif;font-size:18px;font-weight:700;}
+.date-sub{font-size:12px;opacity:.85;margin-top:2px;}
+.date-icon{font-size:36px;opacity:.9;}
+
+/* CARD */
+.card{margin:12px 14px 0;background:white;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.07);border:1.5px solid var(--rule);}
+.card-hd{padding:13px 16px;display:flex;align-items:center;gap:10px;border-bottom:1.5px solid var(--rule);}
+.card-icon{font-size:26px;}
+.card-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:var(--ink);flex:1;}
+.card-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.card-body{padding:16px;}
+
+/* BP INPUT */
+.bp-wrap{display:flex;align-items:center;gap:10px;}
+.bp-field{flex:1;text-align:center;}
+.bp-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px;}
+.bp-input{width:100%;text-align:center;font-family:'Kanit',sans-serif;font-size:32px;font-weight:800;color:var(--teal);border:2px solid var(--rule);border-radius:14px;padding:12px 8px;background:var(--teal-pale);outline:none;-webkit-appearance:none;}
+.bp-input:focus{border-color:var(--teal);background:white;}
+.bp-slash{font-family:'Kanit',sans-serif;font-size:32px;font-weight:800;color:var(--muted);padding-top:20px;}
+.bp-unit{text-align:center;font-size:12px;color:var(--muted);margin-top:6px;}
+.bp-result{margin-top:12px;border-radius:12px;padding:12px 14px;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;display:none;text-align:center;}
+.bp-result.good{background:var(--green-lt);color:var(--green);}
+.bp-result.warn{background:var(--amber-lt);color:var(--amber);}
+.bp-result.danger{background:var(--red-lt);color:var(--red);}
+.bp-target{text-align:center;font-size:12px;color:var(--muted);margin-top:8px;}
+
+/* MOOD */
+.mood-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+.mood-btn{border:2px solid var(--rule);background:white;border-radius:14px;padding:10px 4px;cursor:pointer;text-align:center;transition:all .15s;}
+.mood-btn:active,.mood-btn.on{border-color:var(--teal);background:var(--teal-lt);}
+.mood-emoji{font-size:32px;line-height:1;}
+.mood-label{font-size:11px;font-weight:600;color:var(--muted);margin-top:5px;line-height:1.2;}
+.mood-btn.on .mood-label{color:var(--teal);}
+.mood-depress{margin-top:10px;background:var(--blue-lt);border:1.5px solid #93C5FD;border-radius:12px;padding:11px 13px;font-size:13px;color:#1D4ED8;line-height:1.6;display:none;}
+
+/* MRS */
+.mrs-list{display:flex;flex-direction:column;gap:8px;}
+.mrs-item{border:2px solid var(--rule);border-radius:14px;padding:13px 15px;cursor:pointer;transition:all .15s;display:flex;gap:12px;align-items:flex-start;}
+.mrs-item:active,.mrs-item.on{border-color:var(--teal);background:var(--teal-lt);}
+.mrs-score{font-family:'Kanit',sans-serif;font-size:22px;font-weight:800;color:var(--teal);width:28px;flex-shrink:0;margin-top:2px;}
+.mrs-text{flex:1;}
+.mrs-title{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--ink);}
+.mrs-desc{font-size:13px;color:var(--ink-s);margin-top:3px;line-height:1.5;}
+.mrs-badge{display:inline-block;margin-top:5px;font-size:11px;font-weight:700;padding:2px 9px;border-radius:10px;}
+
+/* SAVE BTN */
+.save-wrap{margin:16px 14px 0;}
+.save-btn{width:100%;padding:16px;background:var(--teal);border:none;border-radius:16px;font-family:'Kanit',sans-serif;font-size:18px;font-weight:700;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(13,124,110,0.3);transition:transform .1s;}
+.save-btn:active{transform:scale(.98);}
+.save-hint{text-align:center;font-size:12px;color:var(--muted);margin-top:8px;}
+
+/* ALERT */
+.alert-danger{margin:12px 14px 0;background:var(--red);border-radius:16px;padding:14px 16px;color:white;display:none;}
+.alert-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;}
+.alert-call{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.35);border-radius:10px;padding:11px;text-align:center;font-family:'Kanit',sans-serif;font-size:18px;font-weight:700;margin-top:10px;cursor:pointer;}
+
+/* ═══ HISTORY PAGE ═══ */
+.hist-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+.hist-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:var(--teal);}
+.hist-count{font-size:13px;color:var(--muted);}
+.hist-empty{text-align:center;color:var(--muted);font-size:15px;padding:40px 20px;line-height:1.8;}
+.hist-list{padding:0 14px;}
+
+.hist-card{background:white;border-radius:16px;padding:14px;margin-bottom:10px;border:1.5px solid var(--rule);box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.hist-date{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.hist-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.hist-item{background:var(--teal-pale);border-radius:10px;padding:8px 10px;text-align:center;}
+.hist-item-label{font-size:10px;color:var(--muted);font-weight:600;margin-bottom:3px;}
+.hist-item-val{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--ink);}
+.hist-item.bp-good{background:var(--green-lt);}
+.hist-item.bp-good .hist-item-val{color:var(--green);}
+.hist-item.bp-warn{background:var(--amber-lt);}
+.hist-item.bp-warn .hist-item-val{color:var(--amber);}
+.hist-item.bp-danger{background:var(--red-lt);}
+.hist-item.bp-danger .hist-item-val{color:var(--red);}
+.hist-mrs{margin-top:8px;background:var(--teal-pale);border-radius:10px;padding:8px 12px;font-size:13px;color:var(--ink-s);}
+.hist-mrs strong{color:var(--teal);}
+
+/* SHOW DOCTOR */
+.show-doc-btn{margin:0 14px 12px;width:calc(100% - 28px);padding:13px;background:white;border:2px solid var(--teal);border-radius:14px;font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--teal);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* CLEAR BTN */
+.clear-btn{margin:4px 14px 0;width:calc(100% - 28px);padding:10px;background:none;border:1.5px solid var(--rule);border-radius:12px;font-family:'Sarabun',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;}
+
+/* DOCTOR VIEW */
+.doc-view{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:white;z-index:200;overflow-y:auto;}
+.doc-hdr{background:var(--teal);padding:14px 16px;display:flex;align-items:center;gap:10px;}
+.doc-close{font-size:24px;color:white;cursor:pointer;flex-shrink:0;}
+.doc-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:white;flex:1;}
+.doc-body{padding:16px;}
+.doc-patient{background:var(--teal-lt);border-radius:14px;padding:14px;margin-bottom:14px;}
+.doc-patient-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+.doc-patient-name{font-family:'Kanit',sans-serif;font-size:20px;font-weight:800;color:var(--teal);}
+.doc-table{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
+.doc-table th{background:var(--teal);color:white;font-family:'Kanit',sans-serif;font-size:13px;padding:10px 8px;text-align:center;}
+.doc-table td{padding:10px 8px;text-align:center;font-size:14px;border-bottom:1px solid var(--rule);background:white;}
+.doc-table tr:nth-child(even) td{background:var(--teal-pale);}
+.doc-table td.bp-good{color:var(--green);font-weight:700;}
+.doc-table td.bp-warn{color:var(--amber);font-weight:700;}
+.doc-table td.bp-danger{color:var(--red);font-weight:700;}
+.doc-summary{background:var(--teal);border-radius:14px;padding:14px 16px;color:white;margin-top:14px;}
+.doc-sum-title{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;}
+.doc-sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.doc-sum-item{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;}
+.doc-sum-label{font-size:11px;opacity:.8;margin-bottom:3px;}
+.doc-sum-val{font-family:'Kanit',sans-serif;font-size:16px;font-weight:800;}
+.doc-footer{margin-top:14px;text-align:center;font-size:12px;color:var(--muted);line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+<div class="hdr-icon">📋</div>
+<div class="hdr-info">
+<div class="hdr-title">บันทึกสุขภาพประจำวัน</div>
+<div class="hdr-sub">SPS Stroke Care · รพ.สรรพสิทธิประสงค์</div>
+</div>
+</div>
+
+<!-- TAB -->
+<div class="tab-bar">
+<button class="tab on" onclick="showTab('record',this)">✏️ กรอกวันนี้</button>
+<button class="tab" onclick="showTab('history',this)">📅 ประวัติย้อนหลัง</button>
+</div>
+
+<!-- ═══ RECORD PAGE ═══ -->
+<div class="page show" id="record">
+
+<!-- DATE -->
+<div class="date-banner">
+<div>
+<div class="date-text" id="todayTxt"></div>
+<div class="date-sub">กรอกข้อมูลเช้าหลังตื่นนอนค่ะ</div>
+</div>
+<div class="date-icon">🌅</div>
+</div>
+
+<!-- ALERT -->
+<div class="alert-danger" id="alertDanger">
+<div class="alert-title">🚨 ความดันสูงมาก — ต้องดำเนินการทันที</div>
+<div id="alertMsg" style="font-size:14px;line-height:1.7"></div>
+<div class="alert-call" onclick="window.location.href='tel:1669'">📞 โทร 1669 ทันที</div>
+</div>
+
+<!-- 1. BP -->
+<div class="card">
+<div class="card-hd">
+<span class="card-icon">🩺</span>
+<span class="card-title">ความดันโลหิต</span>
+<span class="card-tag" style="background:var(--teal-lt);color:var(--teal)">ตอนเช้า</span>
+</div>
+<div class="card-body">
+<div class="bp-wrap">
+<div class="bp-field">
+<div class="bp-label">ตัวบน (Systolic)</div>
+<input class="bp-input" type="number" id="sbp" placeholder="120" inputmode="numeric" oninput="checkBP()">
+<div class="bp-unit">mmHg</div>
+</div>
+<div class="bp-slash">/</div>
+<div class="bp-field">
+<div class="bp-label">ตัวล่าง (Diastolic)</div>
+<input class="bp-input" type="number" id="dbp" placeholder="80" inputmode="numeric" oninput="checkBP()">
+<div class="bp-unit">mmHg</div>
+</div>
+</div>
+<div class="bp-result" id="bpResult"></div>
+<div class="bp-target">🎯 เป้าหมาย: &lt; 130/80 mmHg</div>
+</div>
+</div>
+
+<!-- 2. MOOD -->
+<div class="card">
+<div class="card-hd">
+<span class="card-icon">😊</span>
+<span class="card-title">อารมณ์วันนี้</span>
+<span class="card-tag" style="background:var(--blue-lt);color:var(--blue)">กดเลือก</span>
+</div>
+<div class="card-body">
+<div class="mood-grid">
+<button class="mood-btn" onclick="setMood(this,'😄','สดใส','1')">
+<div class="mood-emoji">😄</div>
+<div class="mood-label">สดใสมาก</div>
+</button>
+<button class="mood-btn" onclick="setMood(this,'🙂','ปกติดี','2')">
+<div class="mood-emoji">🙂</div>
+<div class="mood-label">ปกติดี</div>
+</button>
+<button class="mood-btn" onclick="setMood(this,'😐','เฉยๆ','3')">
+<div class="mood-emoji">😐</div>
+<div class="mood-label">เฉยๆ</div>
+</button>
+<button class="mood-btn" onclick="setMood(this,'😔','เศร้า','4')">
+<div class="mood-emoji">😔</div>
+<div class="mood-label">เศร้า</div>
+</button>
+<button class="mood-btn" onclick="setMood(this,'😢','เศร้ามาก','5')">
+<div class="mood-emoji">😢</div>
+<div class="mood-label">เศร้ามาก</div>
+</button>
+</div>
+<div class="mood-depress" id="moodDepress">
+💙 ความรู้สึกเศร้าพบบ่อยในผู้ป่วย Stroke ค่ะ<br>
+เป็นภาวะที่รักษาได้ — แจ้งแพทย์ในวันนัดด้วยนะค่ะ
+</div>
+</div>
+</div>
+
+<!-- 3. MRS -->
+<div class="card">
+<div class="card-hd">
+<span class="card-icon">🚶</span>
+<span class="card-title">ความสามารถในการเดิน</span>
+<span class="card-tag" style="background:var(--purple-lt);color:var(--purple)">mRS</span>
+</div>
+<div class="card-body">
+<div class="mrs-list" id="mrsList">
+<div class="mrs-item" onclick="setMRS(this,0,'ไม่มีอาการผิดปกติเลย','เดินได้ปกติ ทำทุกอย่างได้เหมือนก่อนป่วย','good')">
+<div class="mrs-score" style="color:var(--green)">0</div>
+<div class="mrs-text">
+<div class="mrs-title">ปกติทุกอย่าง</div>
+<div class="mrs-desc">เดินได้ปกติ ทำทุกอย่างได้เหมือนก่อนป่วย</div>
+<span class="mrs-badge" style="background:var(--green-lt);color:var(--green)">✅ ดีมาก</span>
+</div>
+</div>
+<div class="mrs-item" onclick="setMRS(this,1,'มีอาการเล็กน้อย แต่ทำกิจวัตรได้เอง','เดินได้ แต่รู้สึกอ่อนแรง ชาเล็กน้อย ทำกิจวัตรได้เอง','good')">
+<div class="mrs-score" style="color:#65A30D">1</div>
+<div class="mrs-text">
+<div class="mrs-title">มีอาการเล็กน้อย แต่ทำได้เอง</div>
+<div class="mrs-desc">เดินได้ อาจรู้สึกอ่อนแรงหรือชาเล็กน้อย แต่ทำกิจวัตรเองได้ทั้งหมด</div>
+<span class="mrs-badge" style="background:#ECFCCB;color:#65A30D">✅ ดี</span>
+</div>
+</div>
+<div class="mrs-item" onclick="setMRS(this,2,'มีอาการ แต่เดินได้โดยไม่ต้องช่วย','เดินได้เอง แต่ทำบางอย่างไม่ได้เหมือนก่อน เช่น ทำอาหาร ขับรถ','warn')">
+<div class="mrs-score" style="color:var(--amber)">2</div>
+<div class="mrs-text">
+<div class="mrs-title">เดินได้เอง แต่ทำบางอย่างไม่ได้</div>
+<div class="mrs-desc">เดินได้โดยไม่ต้องมีคนช่วย แต่ทำบางกิจกรรมไม่ได้เหมือนก่อน</div>
+<span class="mrs-badge" style="background:var(--amber-lt);color:var(--amber)">⚠️ พอใช้</span>
+</div>
+</div>
+<div class="mrs-item" onclick="setMRS(this,3,'ต้องการความช่วยเหลือบ้าง แต่เดินได้เอง','เดินได้เอง แต่ต้องการความช่วยเหลือในการแต่งตัว กินข้าว หรืออาบน้ำ','warn')">
+<div class="mrs-score" style="color:#EA580C">3</div>
+<div class="mrs-text">
+<div class="mrs-title">เดินได้เอง แต่ต้องการความช่วยเหลือ</div>
+<div class="mrs-desc">เดินได้ แต่ต้องการความช่วยเหลือในการแต่งตัว อาบน้ำ หรือกินข้าว</div>
+<span class="mrs-badge" style="background:#FFF0E6;color:#EA580C">⚠️ ต้องดูแล</span>
+</div>
+</div>
+<div class="mrs-item" onclick="setMRS(this,4,'เดินไม่ได้ ต้องการความช่วยเหลือมาก','ต้องนอนเตียงหรือนั่งรถเข็น ต้องการความช่วยเหลือในทุกกิจกรรม','danger')">
+<div class="mrs-score" style="color:var(--red)">4</div>
+<div class="mrs-text">
+<div class="mrs-title">เดินไม่ได้ ต้องการความช่วยเหลือมาก</div>
+<div class="mrs-desc">ต้องนั่งรถเข็นหรือนอนเตียง ต้องการความช่วยเหลือในทุกกิจกรรม</div>
+<span class="mrs-badge" style="background:var(--red-lt);color:var(--red)">🔴 ดูแลมาก</span>
+</div>
+</div>
+<div class="mrs-item" onclick="setMRS(this,5,'นอนติดเตียง ต้องดูแลตลอดเวลา','ไม่สามารถทำอะไรได้เลย ต้องดูแลตลอด 24 ชม.','danger')">
+<div class="mrs-score" style="color:#7F1D1D">5</div>
+<div class="mrs-text">
+<div class="mrs-title">นอนติดเตียง ต้องดูแลตลอดเวลา</div>
+<div class="mrs-desc">ไม่สามารถทำอะไรได้เลย ต้องการการดูแลตลอด 24 ชั่วโมง</div>
+<span class="mrs-badge" style="background:#FEE2E2;color:#7F1D1D">🔴 ดูแลเต็มที่</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SAVE -->
+<div class="save-wrap">
+<button class="save-btn" onclick="saveRecord()">💾 บันทึกข้อมูลวันนี้</button>
+<div class="save-hint">ข้อมูลเก็บไว้ในมือถือ นำไปให้แพทย์ดูในวันนัดได้ค่ะ</div>
+</div>
+
+</div>
+
+<!-- ═══ HISTORY PAGE ═══ -->
+<div class="page" id="history">
+<div class="hist-header">
+<div>
+<div class="hist-title">📅 บันทึกย้อนหลัง</div>
+<div class="hist-count" id="histCount"></div>
+</div>
+</div>
+
+<button class="show-doc-btn" onclick="showDoctorView()">
+🏥 เปิดสรุปให้แพทย์ดู
+</button>
+
+<div class="hist-list" id="histList">
+<div class="hist-empty">ยังไม่มีบันทึกค่ะ<br>กรอกข้อมูลแล้วกด "บันทึก" ได้เลย</div>
+</div>
+
+<button class="clear-btn" onclick="clearAll()">🗑️ ลบข้อมูลทั้งหมด</button>
+</div>
+
+<!-- ═══ DOCTOR VIEW ═══ -->
+<div class="doc-view" id="docView">
+<div class="doc-hdr">
+<span class="doc-close" onclick="closeDoctorView()">✕</span>
+<span class="doc-title">🏥 สรุปข้อมูลสำหรับแพทย์</span>
+</div>
+<div class="doc-body" id="docBody"></div>
+</div>
+
+<script>
+// ── STATE ──
+let selectedMood = { emoji:'', label:'', level:'0' };
+let selectedMRS = { score:-1, title:'', desc:'', level:'' };
+
+// ── DATE ──
+const now = new Date();
+const thDays = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const thMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const shortMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+document.getElementById('todayTxt').textContent =
+`${thDays[now.getDay()]}ที่ ${now.getDate()} ${thMonths[now.getMonth()]} ${now.getFullYear()+543}`;
+
+// ── TAB ──
+function showTab(id, btn) {
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+if(id==='history') renderHistory();
+window.scrollTo(0,0);
+}
+
+// ── BP ──
+function checkBP() {
+const sbp = parseInt(document.getElementById('sbp').value)||0;
+const dbp = parseInt(document.getElementById('dbp').value)||0;
+const res = document.getElementById('bpResult');
+const alert = document.getElementById('alertDanger');
+const alertMsg = document.getElementById('alertMsg');
+if(!sbp || !dbp) { res.style.display='none'; alert.style.display='none'; return; }
+res.style.display='block';
+if(sbp>=180||dbp>=110) {
+res.className='bp-result danger';
+res.innerHTML=`🚨 ${sbp}/${dbp} mmHg — สูงมาก ต้องมา รพ. ทันทีหรือโทร 1669`;
+alert.style.display='block';
+alertMsg.textContent=`ความดัน ${sbp}/${dbp} mmHg สูงเกินเกณฑ์ปลอดภัย อย่ารอดูอาการค่ะ`;
+} else if(sbp>=140||dbp>=90) {
+res.className='bp-result warn';
+res.innerHTML=`⚠️ ${sbp}/${dbp} mmHg — สูงกว่าเป้าหมาย แจ้งแพทย์วันนัดด้วยนะค่ะ`;
+alert.style.display='none';
+} else if(sbp<90||dbp<60) {
+res.className='bp-result warn';
+res.innerHTML=`⚠️ ${sbp}/${dbp} mmHg — ต่ำ นอนพักก่อน ถ้าไม่ดีขึ้นมา รพ.ค่ะ`;
+alert.style.display='none';
+} else {
+res.className='bp-result good';
+res.innerHTML=`✅ ${sbp}/${dbp} mmHg — ดีมากค่ะ อยู่ในเกณฑ์ปกติ`;
+alert.style.display='none';
+}
+}
+
+// ── MOOD ──
+function setMood(btn, emoji, label, level) {
+document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+selectedMood = { emoji, label, level };
+document.getElementById('moodDepress').style.display =
+(level==='4'||level==='5') ? 'block' : 'none';
+}
+
+// ── MRS ──
+function setMRS(item, score, title, desc, level) {
+document.querySelectorAll('.mrs-item').forEach(i=>i.classList.remove('on'));
+item.classList.add('on');
+selectedMRS = { score, title, desc, level };
+}
+
+// ── STORAGE ──
+function getRecords() {
+try { return JSON.parse(localStorage.getItem('spsStrokeRec')||'[]'); }
+catch(e) { return []; }
+}
+function saveRecords(recs) {
+try { localStorage.setItem('spsStrokeRec', JSON.stringify(recs)); return true; }
+catch(e) { return false; }
+}
+
+// ── SAVE ──
+function saveRecord() {
+const sbp = document.getElementById('sbp').value;
+const dbp = document.getElementById('dbp').value;
+if(!sbp || !dbp) { alert('กรุณากรอกความดันโลหิตก่อนนะค่ะ 🩺'); return; }
+if(selectedMood.level==='0') { alert('กรุณาเลือกอารมณ์วันนี้ก่อนนะค่ะ 😊'); return; }
+if(selectedMRS.score<0) { alert('กรุณาเลือกความสามารถในการเดินก่อนนะค่ะ 🚶'); return; }
+
+const dateKey = now.toISOString().split('T')[0];
+const rec = {
+dateKey,
+dateDisplay: `${now.getDate()} ${shortMonths[now.getMonth()]} ${now.getFullYear()+543}`,
+dateFull: `${thDays[now.getDay()]}ที่ ${now.getDate()} ${thMonths[now.getMonth()]} ${now.getFullYear()+543}`,
+sbp: parseInt(sbp), dbp: parseInt(dbp),
+bpText: `${sbp}/${dbp}`,
+bpLevel: parseInt(sbp)>=180||parseInt(dbp)>=110 ? 'danger' : parseInt(sbp)>=140||parseInt(dbp)>=90 ? 'warn' : 'good',
+mood: selectedMood,
+mrs: selectedMRS,
+ts: new Date().toISOString(),
+};
+
+let recs = getRecords().filter(r=>r.dateKey!==dateKey);
+recs.unshift(rec);
+if(recs.length>90) recs=recs.slice(0,90);
+
+if(saveRecords(recs)) {
+alert(`✅ บันทึกแล้วค่ะ!\n\nความดัน: ${sbp}/${dbp} mmHg\nอารมณ์: ${selectedMood.emoji} ${selectedMood.label}\nการเดิน: mRS ${selectedMRS.score}`);
+// Reset
+document.getElementById('sbp').value='';
+document.getElementById('dbp').value='';
+document.getElementById('bpResult').style.display='none';
+document.getElementById('alertDanger').style.display='none';
+document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('on'));
+document.querySelectorAll('.mrs-item').forEach(i=>i.classList.remove('on'));
+document.getElementById('moodDepress').style.display='none';
+selectedMood={emoji:'',label:'',level:'0'};
+selectedMRS={score:-1,title:'',desc:'',level:''};
+showTab('history', document.querySelectorAll('.tab')[1]);
+} else {
+alert('❌ บันทึกไม่สำเร็จ อาจเกิดจากเปิดใน LINE โดยตรง\nกรุณาเปิดลิงก์ใน Safari หรือ Chrome แทนนะค่ะ');
+}
+}
+
+// ── RENDER HISTORY ──
+function renderHistory() {
+const recs = getRecords();
+const list = document.getElementById('histList');
+const count = document.getElementById('histCount');
+count.textContent = recs.length > 0 ? `มีทั้งหมด ${recs.length} วัน` : '';
+if(recs.length===0) {
+list.innerHTML='<div class="hist-empty">ยังไม่มีบันทึกค่ะ<br>กลับไปกรอกข้อมูลแล้วกด "บันทึก"</div>';
+return;
+}
+list.innerHTML = recs.map(r=>{
+const bpCls = r.bpLevel==='danger'?'bp-danger':r.bpLevel==='warn'?'bp-warn':'bp-good';
+const mrsCls = r.mrs.level==='danger'?'bp-danger':r.mrs.level==='warn'?'bp-warn':'bp-good';
+return `<div class="hist-card">
+<div class="hist-date">📅 ${r.dateFull||r.dateDisplay}</div>
+<div class="hist-row">
+<div class="hist-item ${bpCls}">
+<div class="hist-item-label">🩺 ความดัน</div>
+<div class="hist-item-val">${r.bpText}</div>
+</div>
+<div class="hist-item">
+<div class="hist-item-label">😊 อารมณ์</div>
+<div class="hist-item-val">${r.mood.emoji}</div>
+</div>
+<div class="hist-item ${mrsCls}">
+<div class="hist-item-label">🚶 mRS</div>
+<div class="hist-item-val">${r.mrs.score}</div>
+</div>
+</div>
+<div class="hist-mrs"><strong>การเดิน:</strong> ${r.mrs.title}</div>
+</div>`;
+}).join('');
+}
+
+// ── DOCTOR VIEW ──
+function showDoctorView() {
+const recs = getRecords();
+if(recs.length===0) { alert('ยังไม่มีบันทึกค่ะ'); return; }
+const body = document.getElementById('docBody');
+
+// Summary stats
+const bps = recs.map(r=>r.sbp);
+const avgBP = Math.round(bps.reduce((a,b)=>a+b,0)/bps.length);
+const maxBP = Math.max(...bps);
+const minBP = Math.min(...bps);
+const latestMRS = recs[0].mrs.score;
+const dangerDays = recs.filter(r=>r.bpLevel==='danger').length;
+const sadDays = recs.filter(r=>r.mood.level==='4'||r.mood.level==='5').length;
+
+// Table rows (max 30)
+const tableRows = recs.slice(0,30).map(r=>{
+const bpCls = r.bpLevel==='danger'?'bp-danger':r.bpLevel==='warn'?'bp-warn':'bp-good';
+const mrsCls = r.mrs.level==='danger'?'bp-danger':r.mrs.level==='warn'?'bp-warn':'';
+return `<tr>
+<td>${r.dateDisplay}</td>
+<td class="${bpCls}">${r.bpText}</td>
+<td>${r.mood.emoji} ${r.mood.label}</td>
+<td class="${mrsCls}">mRS ${r.mrs.score}</td>
+</tr>`;
+}).join('');
+
+body.innerHTML = `
+<div class="doc-patient">
+<div class="doc-patient-label">บันทึกสุขภาพผู้ป่วย — SPS Stroke Care</div>
+<div class="doc-patient-name">📊 ข้อมูล ${recs.length} วัน</div>
+<div style="font-size:12px;color:var(--muted);margin-top:4px">
+${recs[recs.length-1].dateDisplay} — ${recs[0].dateDisplay}
+</div>
+</div>
+
+<div class="doc-summary">
+<div class="doc-sum-title">📈 สรุปภาพรวม</div>
+<div class="doc-sum-grid">
+<div class="doc-sum-item">
+<div class="doc-sum-label">ค่าเฉลี่ย BP ตัวบน</div>
+<div class="doc-sum-val">${avgBP} mmHg</div>
+</div>
+<div class="doc-sum-item">
+<div class="doc-sum-label">BP สูงสุด / ต่ำสุด</div>
+<div class="doc-sum-val">${maxBP} / ${minBP}</div>
+</div>
+<div class="doc-sum-item">
+<div class="doc-sum-label">mRS ล่าสุด</div>
+<div class="doc-sum-val">mRS ${latestMRS}</div>
+</div>
+<div class="doc-sum-item">
+<div class="doc-sum-label">วันที่ BP ≥180</div>
+<div class="doc-sum-val">${dangerDays > 0 ? dangerDays+' วัน ⚠️' : 'ไม่มี ✅'}</div>
+</div>
+<div class="doc-sum-item">
+<div class="doc-sum-label">วันที่รู้สึกเศร้า</div>
+<div class="doc-sum-val">${sadDays > 0 ? sadDays+' วัน' : 'ไม่มี ✅'}</div>
+</div>
+<div class="doc-sum-item">
+<div class="doc-sum-label">บันทึกทั้งหมด</div>
+<div class="doc-sum-val">${recs.length} วัน</div>
+</div>
+</div>
+</div>
+
+<div style="margin-top:14px;font-family:Kanit;font-size:14px;font-weight:700;color:var(--teal);margin-bottom:8px">📋 บันทึกรายวัน</div>
+<div style="overflow-x:auto;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.07)">
+<table class="doc-table">
+<thead><tr>
+<th>วันที่</th>
+<th>ความดัน</th>
+<th>อารมณ์</th>
+<th>mRS</th>
+</tr></thead>
+<tbody>${tableRows}</tbody>
+</table>
+</div>
+
+<div class="doc-footer">
+🧠 SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์<br>
+ข้อมูลบันทึกโดยผู้ป่วย/ผู้ดูแลที่บ้าน<br>
+ผ่าน LINE OA: SPS Stroke Care
+</div>`;
+
+document.getElementById('docView').style.display='block';
+window.scrollTo(0,0);
+}
+
+function closeDoctorView() {
+document.getElementById('docView').style.display='none';
+}
+
+// ── CLEAR ──
+function clearAll() {
+if(confirm('ลบบันทึกทั้งหมดออกไหมค่ะ? ไม่สามารถกู้คืนได้')) {
+localStorage.removeItem('spsStrokeRec');
+renderHistory();
+}
+}
+
+// ── INIT ──
+renderHistory();
+</script>
+</body>
+</html>
