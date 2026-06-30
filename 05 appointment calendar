@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ปฏิทินนัด — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap');
+
+:root {
+--teal:#0D7C6E; --teal-lt:#E2F5F3; --teal-pale:#F0FAF9;
+--red:#D63031; --red-lt:#FDE8E8;
+--amber:#E8870A; --amber-lt:#FFF4E0;
+--green:#27AE60; --green-lt:#E9F8EF;
+--blue:#2563EB; --blue-lt:#EFF6FF;
+--purple:#7C3AED; --purple-lt:#F5F3FF;
+--ink:#1C2B2A; --ink-s:#3D5250; --muted:#718E8C;
+--rule:#D4E8E5; --bg:#F5FAF9;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:32px;}
+
+/* HEADER */
+.hdr{background:var(--teal);padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(13,124,110,0.25);}
+.hdr-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hdr-info{flex:1;}
+.hdr-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:white;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.8);margin-top:1px;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--teal),#1A9F8F);padding:18px 16px;color:white;}
+.hero-title{font-family:'Kanit',sans-serif;font-size:20px;font-weight:800;margin-bottom:4px;}
+.hero-sub{font-size:13px;opacity:.88;line-height:1.6;}
+
+/* SETUP CARD */
+.setup-card{margin:14px;background:white;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.07);border:1.5px solid var(--rule);}
+.setup-hd{padding:13px 16px;background:var(--teal);display:flex;align-items:center;gap:8px;}
+.setup-hd-icon{font-size:22px;}
+.setup-hd-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:white;}
+.setup-body{padding:16px;}
+
+.field-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px;display:block;}
+.field-label span{color:var(--red);margin-left:2px;}
+input[type=date],input[type=text]{
+width:100%;padding:12px 14px;border:2px solid var(--rule);border-radius:12px;
+font-family:'Sarabun',sans-serif;font-size:16px;color:var(--ink);
+background:var(--teal-pale);outline:none;transition:border-color .15s;
+-webkit-appearance:none;
+}
+input[type=date]:focus,input[type=text]:focus{border-color:var(--teal);background:white;}
+.field-group{margin-bottom:14px;}
+.field-hint{font-size:11px;color:var(--muted);margin-top:4px;}
+
+/* ADD APPT */
+.appt-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:10px;}
+.appt-row .field-group{flex:1;margin-bottom:0;}
+.add-btn{width:44px;height:46px;border-radius:12px;background:var(--teal);border:none;color:white;font-size:22px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.add-btn:active{background:var(--teal);}
+
+/* APPT LIST (input) */
+.appt-input-list{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.appt-input-item{display:flex;align-items:center;gap:8px;background:var(--teal-lt);border-radius:10px;padding:8px 12px;}
+.appt-input-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+.appt-input-text{flex:1;font-size:14px;color:var(--ink);}
+.appt-input-del{font-size:18px;color:var(--muted);cursor:pointer;padding:2px 4px;}
+
+/* SAVE BTN */
+.save-btn{width:100%;padding:15px;background:var(--teal);border:none;border-radius:14px;font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:white;cursor:pointer;box-shadow:0 4px 14px rgba(13,124,110,0.3);transition:transform .1s;}
+.save-btn:active{transform:scale(.98);}
+
+/* ═══ CALENDAR VIEW ═══ */
+.cal-wrap{padding:0 14px;}
+
+/* PATIENT BANNER */
+.patient-banner{background:var(--teal);border-radius:16px;padding:14px 16px;color:white;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.patient-icon{font-size:36px;}
+.patient-info{flex:1;}
+.patient-name{font-family:'Kanit',sans-serif;font-size:18px;font-weight:800;}
+.patient-discharge{font-size:13px;opacity:.85;margin-top:3px;}
+.edit-btn{background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.3);color:white;border-radius:10px;padding:7px 12px;font-family:'Kanit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+
+/* NEXT APPT */
+.next-appt{background:white;border-radius:16px;padding:16px;margin-bottom:14px;border:2px solid var(--teal);box-shadow:0 4px 16px rgba(13,124,110,0.12);}
+.next-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.next-date{font-family:'Kanit',sans-serif;font-size:22px;font-weight:800;color:var(--teal);}
+.next-dept{font-size:14px;color:var(--ink-s);margin-top:4px;}
+.next-countdown{margin-top:10px;display:flex;align-items:center;gap:8px;}
+.countdown-num{font-family:'Kanit',sans-serif;font-size:36px;font-weight:800;color:var(--teal);line-height:1;}
+.countdown-unit{font-size:14px;color:var(--muted);}
+.today-badge{background:var(--red);color:white;font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;padding:6px 14px;border-radius:20px;}
+.past-badge{background:var(--green-lt);color:var(--green);font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px;}
+
+/* APPT TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.timeline-item{display:flex;gap:12px;align-items:stretch;}
+.timeline-left{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0;}
+.timeline-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:16px;}
+.timeline-dot.done{background:var(--green);color:white;}
+.timeline-dot.next{background:var(--teal);color:white;box-shadow:0 0 0 4px var(--teal-lt);}
+.timeline-dot.future{background:white;border:2px solid var(--rule);color:var(--muted);}
+.timeline-dot.overdue{background:var(--amber);color:white;}
+.timeline-line{width:2px;background:var(--rule);flex:1;margin:0 auto;}
+.timeline-item:last-child .timeline-line{display:none;}
+.timeline-card{flex:1;background:white;border-radius:14px;padding:13px 14px;margin:8px 0;border:1.5px solid var(--rule);box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+.timeline-card.next{border-color:var(--teal);background:var(--teal-pale);}
+.timeline-card.done{opacity:.7;}
+.timeline-card.overdue{border-color:var(--amber);}
+.tc-date{font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--ink);}
+.tc-dept{font-size:13px;color:var(--ink-s);margin-top:3px;}
+.tc-status{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;}
+.tc-status.done{background:var(--green-lt);color:var(--green);}
+.tc-status.next{background:var(--teal-lt);color:var(--teal);}
+.tc-status.future{background:var(--blue-lt);color:var(--blue);}
+.tc-status.overdue{background:var(--amber-lt);color:var(--amber);}
+.tc-days{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* REMINDER */
+.reminder-box{background:var(--amber-lt);border:1.5px solid #F5C87A;border-radius:14px;padding:13px 15px;margin-bottom:14px;}
+.rem-title{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--amber);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.rem-body{font-size:13px;color:var(--ink-s);line-height:1.65;}
+
+/* PREP LIST */
+.prep-card{background:white;border-radius:14px;padding:14px;margin-bottom:14px;border:1.5px solid var(--rule);}
+.prep-title{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--teal);margin-bottom:10px;}
+.prep-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:13.5px;color:var(--ink-s);}
+.prep-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--rule);background:white;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s;}
+.prep-check.on{background:var(--teal);border-color:var(--teal);color:white;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+<div class="hdr-icon">📅</div>
+<div class="hdr-info">
+<div class="hdr-title">ปฏิทินนัดหมาย</div>
+<div class="hdr-sub">SPS Stroke Care · รพ.สรรพสิทธิประสงค์</div>
+</div>
+</div>
+
+<!-- ═══ SETUP PAGE ═══ -->
+<div id="setupPage">
+<div class="hero">
+<div class="hero-title">📅 ลงวันนัดหมายของคุณ</div>
+<div class="hero-sub">กรอกครั้งเดียว ระบบจะแสดงว่าเหลืออีกกี่วันถึงวันนัดค่ะ</div>
+</div>
+
+<div class="setup-card">
+<div class="setup-hd"><span class="setup-hd-icon">👤</span><span class="setup-hd-title">ข้อมูลผู้ป่วย</span></div>
+<div class="setup-body">
+<div class="field-group">
+<label class="field-label">ชื่อ-นามสกุล <span>*</span></label>
+<input type="text" id="patientName" placeholder="เช่น นายสมชาย ใจดี">
+</div>
+<div class="field-group">
+<label class="field-label">วันที่จำหน่ายออกจาก รพ. <span>*</span></label>
+<input type="date" id="dischargeDate">
+<div class="field-hint">วันที่กลับบ้านจาก รพ.สรรพสิทธิประสงค์</div>
+</div>
+</div>
+</div>
+
+<div class="setup-card">
+<div class="setup-hd"><span class="setup-hd-icon">🏥</span><span class="setup-hd-title">วันนัดหมาย</span></div>
+<div class="setup-body">
+<div style="font-size:13px;color:var(--ink-s);margin-bottom:12px;line-height:1.6">
+กรอกวันนัดตามใบนัดที่ได้รับจาก รพ. ค่ะ<br>
+ใส่ได้หลายวัน เช่น นัดอายุรกรรม นัดกายภาพ นัดตรวจเลือด
+</div>
+
+<div class="appt-row">
+<div class="field-group">
+<label class="field-label">วันที่นัด</label>
+<input type="date" id="newApptDate">
+</div>
+<button class="add-btn" onclick="addAppt()">+</button>
+</div>
+<div class="field-group">
+<label class="field-label">แผนก / รายละเอียด (ไม่บังคับ)</label>
+<input type="text" id="newApptDept" placeholder="เช่น อายุรกรรม, กายภาพบำบัด, ตรวจเลือด">
+</div>
+
+<div class="appt-input-list" id="apptInputList">
+<div style="text-align:center;color:var(--muted);font-size:13px;padding:12px">
+ยังไม่มีวันนัด กดปุ่ม + เพื่อเพิ่มค่ะ
+</div>
+</div>
+</div>
+</div>
+
+<div style="margin:0 14px 14px">
+<button class="save-btn" onclick="saveSetup()">💾 บันทึกและดูปฏิทิน</button>
+</div>
+</div>
+
+<!-- ═══ CALENDAR PAGE ═══ -->
+<div id="calPage" style="display:none">
+
+<div class="cal-wrap">
+<!-- PATIENT BANNER -->
+<div style="height:14px"></div>
+<div class="patient-banner">
+<div class="patient-icon">🧠</div>
+<div class="patient-info">
+<div class="patient-name" id="calName"></div>
+<div class="patient-discharge" id="calDischarge"></div>
+</div>
+<button class="edit-btn" onclick="editSetup()">✏️ แก้ไข</button>
+</div>
+
+<!-- NEXT APPT -->
+<div class="next-appt" id="nextApptBox"></div>
+
+<!-- OVERDUE REMINDER -->
+<div class="reminder-box" id="overdueBox" style="display:none">
+<div class="rem-title">⚠️ มีนัดที่ผ่านมาแล้ว</div>
+<div class="rem-body" id="overdueMsg"></div>
+</div>
+
+<!-- TIMELINE -->
+<div style="font-family:'Kanit',sans-serif;font-size:15px;font-weight:700;color:var(--teal);margin-bottom:10px">
+📋 วันนัดทั้งหมด
+</div>
+<div class="timeline" id="timeline"></div>
+
+<!-- PREP LIST -->
+<div class="prep-card">
+<div class="prep-title">✅ เตรียมตัวก่อนวันนัด</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>เตรียมใบนัด / บัตรประชาชน</span>
+</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>เตรียมยาที่ใช้อยู่ทุกชนิด หรือถ่ายรูปซองยาไว้</span>
+</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>เปิดหน้า "บันทึกสุขภาพ" ให้แพทย์ดู BP และ mRS</span>
+</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>จดคำถามที่อยากถามแพทย์ไว้ก่อน</span>
+</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>เตรียมคนพาไป รพ. ไม่ขับรถเองค่ะ</span>
+</div>
+<div class="prep-item">
+<div class="prep-check" onclick="togglePrep(this)"></div>
+<span>มาถึงก่อนเวลานัด 30 นาที</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+// ── STATE ──
+let appts = []; // { date, dept }
+const today = new Date();
+today.setHours(0,0,0,0);
+
+const thDays=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+const thMonths=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const thMonthsFull=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+function formatDate(d) {
+return `${thDays[d.getDay()]}ที่ ${d.getDate()} ${thMonthsFull[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+function formatDateShort(d) {
+return `${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+function parseDate(str) {
+const d = new Date(str);
+d.setHours(0,0,0,0);
+return d;
+}
+function daysDiff(d) {
+return Math.round((d - today)/(1000*60*60*24));
+}
+
+// ── SET DEFAULT DATES ──
+window.addEventListener('load', () => {
+const todayStr = today.toISOString().split('T')[0];
+document.getElementById('dischargeDate').value = todayStr;
+document.getElementById('newApptDate').value = todayStr;
+loadData();
+});
+
+// ── ADD APPT ──
+function addAppt() {
+const dateVal = document.getElementById('newApptDate').value;
+const dept = document.getElementById('newApptDept').value.trim();
+if(!dateVal) { alert('กรุณาเลือกวันนัดก่อนค่ะ'); return; }
+appts.push({ date: dateVal, dept: dept||'ห้องตรวจ' });
+appts.sort((a,b)=>a.date.localeCompare(b.date));
+document.getElementById('newApptDept').value='';
+renderApptInputList();
+}
+
+function removeAppt(idx) {
+appts.splice(idx,1);
+renderApptInputList();
+}
+
+function renderApptInputList() {
+const list = document.getElementById('apptInputList');
+if(appts.length===0) {
+list.innerHTML='<div style="text-align:center;color:var(--muted);font-size:13px;padding:12px">ยังไม่มีวันนัด กดปุ่ม + เพื่อเพิ่มค่ะ</div>';
+return;
+}
+list.innerHTML = appts.map((a,i)=>`
+<div class="appt-input-item">
+<div class="appt-input-dot"></div>
+<div class="appt-input-text">
+<strong>${formatDateShort(parseDate(a.date))}</strong>
+${a.dept ? ` — ${a.dept}` : ''}
+</div>
+<div class="appt-input-del" onclick="removeAppt(${i})">✕</div>
+</div>`).join('');
+}
+
+// ── SAVE SETUP ──
+function saveSetup() {
+const name = document.getElementById('patientName').value.trim();
+const discharge = document.getElementById('dischargeDate').value;
+if(!name) { alert('กรุณากรอกชื่อผู้ป่วยก่อนนะค่ะ'); return; }
+if(!discharge) { alert('กรุณากรอกวันที่จำหน่ายก่อนนะค่ะ'); return; }
+if(appts.length===0) { alert('กรุณาเพิ่มวันนัดอย่างน้อย 1 วันนะค่ะ'); return; }
+
+const data = { name, discharge, appts };
+try {
+localStorage.setItem('spsAppt', JSON.stringify(data));
+} catch(e) {}
+showCalendar(data);
+}
+
+// ── LOAD DATA ──
+function loadData() {
+try {
+const raw = localStorage.getItem('spsAppt');
+if(raw) {
+const data = JSON.parse(raw);
+appts = data.appts||[];
+renderApptInputList();
+showCalendar(data);
+}
+} catch(e) {}
+}
+
+// ── SHOW CALENDAR ──
+function showCalendar(data) {
+document.getElementById('setupPage').style.display='none';
+document.getElementById('calPage').style.display='block';
+window.scrollTo(0,0);
+
+const dischargeD = parseDate(data.discharge);
+document.getElementById('calName').textContent = `👤 ${data.name}`;
+document.getElementById('calDischarge').textContent = `จำหน่าย: ${formatDateShort(dischargeD)}`;
+
+// Sort appts
+const sortedAppts = [...data.appts].sort((a,b)=>a.date.localeCompare(b.date));
+
+// Find next appt
+const futureAppts = sortedAppts.filter(a => daysDiff(parseDate(a.date)) >= 0);
+const pastAppts = sortedAppts.filter(a => daysDiff(parseDate(a.date)) < 0);
+const nextAppt = futureAppts[0];
+const overdueAppts= pastAppts.filter(a=>daysDiff(parseDate(a.date))<0);
+
+// NEXT APPT BOX
+const nextBox = document.getElementById('nextApptBox');
+if(nextAppt) {
+const nd = parseDate(nextAppt.date);
+const diff = daysDiff(nd);
+let countdownHtml = '';
+if(diff===0) {
+countdownHtml=`<div class="today-badge">🏥 วันนี้! เตรียมพร้อมไป รพ. ค่ะ</div>`;
+} else {
+countdownHtml=`<div class="next-countdown">
+<div class="countdown-num">${diff}</div>
+<div class="countdown-unit">วัน<br>อีกแค่นี้ค่ะ</div>
+</div>`;
+}
+nextBox.innerHTML=`
+<div class="next-label">🏥 นัดถัดไป</div>
+<div class="next-date">${formatDate(nd)}</div>
+<div class="next-dept">${nextAppt.dept||'ห้องตรวจ'}</div>
+${countdownHtml}`;
+} else {
+nextBox.innerHTML=`
+<div class="next-label">✅ ไม่มีนัดที่รออยู่</div>
+<div class="next-date" style="color:var(--green)">ผ่านครบทุกนัดแล้วค่ะ</div>
+<div class="next-dept" style="margin-top:6px">ถ้ามีนัดใหม่กดปุ่ม "แก้ไข" เพื่อเพิ่มค่ะ</div>`;
+}
+
+// OVERDUE
+const overdueBox = document.getElementById('overdueBox');
+if(overdueAppts.length>0) {
+overdueBox.style.display='block';
+document.getElementById('overdueMsg').innerHTML =
+overdueAppts.map(a=>{
+const d=parseDate(a.date);
+const diff=Math.abs(daysDiff(d));
+return `• ${formatDateShort(d)} (${a.dept||'ห้องตรวจ'}) — ผ่านมา ${diff} วันแล้ว`;
+}).join('<br>') + '<br><br>ถ้ายังไม่ได้ไป รพ. กรุณาติดต่อนัดใหม่นะค่ะ';
+} else {
+overdueBox.style.display='none';
+}
+
+// TIMELINE
+const timeline = document.getElementById('timeline');
+timeline.innerHTML = sortedAppts.map((a,i)=>{
+const d = parseDate(a.date);
+const diff = daysDiff(d);
+let dotClass, statusClass, statusText, daysText;
+
+if(diff < 0) {
+dotClass='done'; statusClass='done'; statusText='✅ ผ่านแล้ว';
+daysText=`ผ่านมา ${Math.abs(diff)} วัน`;
+} else if(diff===0) {
+dotClass='next'; statusClass='next'; statusText='🏥 วันนี้!';
+daysText='วันนี้เลยค่ะ';
+} else if(diff<=7) {
+dotClass='next'; statusClass='next'; statusText='🔔 ใกล้แล้ว';
+daysText=`อีก ${diff} วัน`;
+} else {
+dotClass='future'; statusClass='future'; statusText=`📅 อีก ${diff} วัน`;
+daysText=`อีก ${diff} วัน`;
+}
+
+const isNext = nextAppt && a.date===nextAppt.date && dotClass!=='done';
+return `<div class="timeline-item">
+<div class="timeline-left">
+<div class="timeline-dot ${dotClass}">${diff<0?'✓':diff===0?'!':''}</div>
+<div class="timeline-line"></div>
+</div>
+<div class="timeline-card ${isNext?'next':''}">
+<div class="tc-date">${formatDate(d)}</div>
+<div class="tc-dept">🏥 ${a.dept||'ห้องตรวจ'}</div>
+<span class="tc-status ${statusClass}">${statusText}</span>
+<div class="tc-days">${daysText}</div>
+</div>
+</div>`;
+}).join('');
+}
+
+// ── EDIT ──
+function editSetup() {
+document.getElementById('calPage').style.display='none';
+document.getElementById('setupPage').style.display='block';
+try {
+const data = JSON.parse(localStorage.getItem('spsAppt')||'{}');
+if(data.name) document.getElementById('patientName').value=data.name;
+if(data.discharge) document.getElementById('dischargeDate').value=data.discharge;
+if(data.appts) { appts=[...data.appts]; renderApptInputList(); }
+} catch(e){}
+window.scrollTo(0,0);
+}
+
+// ── PREP CHECK ──
+function togglePrep(el) {
+el.classList.toggle('on');
+el.textContent = el.classList.contains('on') ? '✓' : '';
+}
+</script>
+</body>
+</html>
