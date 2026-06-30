@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ประเมินการกลืน — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Kanit:wght@500;600;700&display=swap');
+
+:root {
+--teal: #0D7C6E;
+--teal-mid: #1A9F8F;
+--teal-light: #E2F5F3;
+--teal-pale: #F0FAF9;
+--amber: #E8870A;
+--amber-light:#FFF4E0;
+--red: #D63031;
+--red-light: #FDE8E8;
+--green: #27AE60;
+--green-light:#E9F8EF;
+--ink: #1C2B2A;
+--ink-soft: #3D5250;
+--muted: #718E8C;
+--rule: #D4E8E5;
+--bg: #F5FAF9;
+--white: #FFFFFF;
+--step-h: 52px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+font-family: 'Sarabun', sans-serif;
+background: var(--bg);
+color: var(--ink);
+font-size: 15px;
+line-height: 1.65;
+-webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.site-header {
+background: var(--teal);
+padding: 0;
+position: sticky; top: 0; z-index: 100;
+box-shadow: 0 2px 12px rgba(13,124,110,0.25);
+}
+.header-inner {
+display: flex; align-items: center; gap: 10px;
+padding: 10px 16px;
+}
+.header-icon {
+width: 38px; height: 38px; border-radius: 10px;
+background: rgba(255,255,255,0.18);
+display: flex; align-items: center; justify-content: center;
+font-size: 20px; flex-shrink: 0;
+}
+.header-text { flex: 1; }
+.header-title {
+font-family: 'Kanit', sans-serif;
+font-size: 15px; font-weight: 600; color: white;
+line-height: 1.2;
+}
+.header-sub { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 1px; }
+.header-badge {
+background: rgba(255,255,255,0.18);
+color: white; font-size: 10px; font-weight: 600;
+padding: 3px 8px; border-radius: 20px;
+border: 1px solid rgba(255,255,255,0.3);
+white-space: nowrap;
+}
+
+/* ── PROGRESS NAV ── */
+.progress-nav {
+background: white;
+border-bottom: 1px solid var(--rule);
+padding: 10px 16px;
+display: flex; gap: 6px; overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+}
+.progress-nav::-webkit-scrollbar { display: none; }
+.nav-chip {
+flex-shrink: 0;
+padding: 5px 12px; border-radius: 20px;
+font-size: 12px; font-weight: 600;
+border: 1.5px solid var(--rule);
+color: var(--muted); background: white;
+cursor: pointer; text-decoration: none;
+transition: all 0.15s;
+white-space: nowrap;
+}
+.nav-chip:hover, .nav-chip.active {
+background: var(--teal); border-color: var(--teal); color: white;
+}
+
+/* ── HERO BANNER ── */
+.hero {
+background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
+padding: 24px 18px 20px;
+color: white;
+position: relative; overflow: hidden;
+}
+.hero::after {
+content: '🫁';
+position: absolute; right: -8px; bottom: -12px;
+font-size: 90px; opacity: 0.12;
+line-height: 1;
+}
+.hero-eyebrow {
+font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+text-transform: uppercase; opacity: 0.75; margin-bottom: 6px;
+}
+.hero-title {
+font-family: 'Kanit', sans-serif;
+font-size: 22px; font-weight: 700; line-height: 1.25;
+margin-bottom: 8px;
+}
+.hero-desc { font-size: 13px; opacity: 0.88; line-height: 1.6; max-width: 300px; }
+.hero-tags { display: flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+.hero-tag {
+background: rgba(255,255,255,0.18);
+border: 1px solid rgba(255,255,255,0.3);
+color: white; font-size: 11px; font-weight: 600;
+padding: 3px 10px; border-radius: 20px;
+}
+
+/* ── ALERT BOX ── */
+.alert-box {
+margin: 14px 16px;
+border-radius: 14px; padding: 13px 15px;
+display: flex; gap: 11px; align-items: flex-start;
+}
+.alert-box.warning {
+background: var(--amber-light);
+border: 1.5px solid #F5C87A;
+}
+.alert-box.danger {
+background: var(--red-light);
+border: 1.5px solid #F5A0A0;
+}
+.alert-box.info {
+background: var(--teal-light);
+border: 1.5px solid #A0D8D3;
+}
+.alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.alert-title {
+font-family: 'Kanit', sans-serif;
+font-size: 13px; font-weight: 600; margin-bottom: 3px;
+}
+.alert-box.warning .alert-title { color: var(--amber); }
+.alert-box.danger .alert-title { color: var(--red); }
+.alert-box.info .alert-title { color: var(--teal); }
+.alert-body { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+
+/* ── SECTION ── */
+.section { padding: 0 0 8px; }
+.section-header {
+padding: 18px 16px 10px;
+display: flex; align-items: center; gap: 10px;
+}
+.section-num {
+width: 32px; height: 32px; border-radius: 50%;
+background: var(--teal); color: white;
+font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 700;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
+.section-title {
+font-family: 'Kanit', sans-serif;
+font-size: 17px; font-weight: 700; color: var(--teal);
+line-height: 1.2;
+}
+.section-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ── STEP CARDS ── */
+.steps-wrap { padding: 0 16px; }
+
+.step-card {
+background: white;
+border-radius: 16px;
+margin-bottom: 10px;
+overflow: hidden;
+box-shadow: 0 2px 8px rgba(13,124,110,0.07);
+border: 1px solid var(--rule);
+}
+.step-head {
+display: flex; align-items: center; gap: 12px;
+padding: 13px 15px;
+cursor: pointer;
+user-select: none;
+}
+.step-num {
+width: 36px; height: 36px; border-radius: 50%;
+background: var(--teal-light);
+color: var(--teal); font-family: 'Kanit', sans-serif;
+font-size: 15px; font-weight: 700;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0;
+}
+.step-card.danger .step-num { background: var(--red-light); color: var(--red); }
+.step-card.warning .step-num { background: var(--amber-light); color: var(--amber); }
+.step-card.success .step-num { background: var(--green-light); color: var(--green); }
+
+.step-info { flex: 1; }
+.step-title {
+font-family: 'Kanit', sans-serif;
+font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.step-tag {
+display: inline-block; margin-top: 3px;
+font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+padding: 2px 8px; border-radius: 10px;
+}
+.tag-teal { background: var(--teal-light); color: var(--teal); }
+.tag-red { background: var(--red-light); color: var(--red); }
+.tag-amber{ background: var(--amber-light);color: var(--amber);}
+.tag-green{ background: var(--green-light);color: var(--green);}
+
+.step-chevron {
+font-size: 18px; color: var(--muted);
+transition: transform 0.2s;
+flex-shrink: 0;
+}
+.step-card.open .step-chevron { transform: rotate(90deg); }
+
+.step-body {
+display: none;
+padding: 0 15px 15px;
+border-top: 1px solid var(--rule);
+}
+.step-card.open .step-body { display: block; }
+
+.step-illus {
+background: var(--teal-pale);
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 12px;
+margin-top: 12px;
+text-align: center;
+font-size: 44px;
+line-height: 1;
+position: relative;
+}
+.step-illus .illus-label {
+font-size: 11px; color: var(--muted);
+margin-top: 6px; font-weight: 500;
+}
+
+.step-prose { font-size: 14px; color: var(--ink-soft); line-height: 1.65; }
+.step-prose strong { color: var(--ink); }
+.step-prose em { font-style: normal; color: var(--teal); font-weight: 600; }
+
+.do-dont {
+display: grid; grid-template-columns: 1fr 1fr;
+gap: 8px; margin-top: 10px;
+}
+.do-box, .dont-box {
+border-radius: 10px; padding: 10px 11px; font-size: 12.5px; line-height: 1.55;
+}
+.do-box { background: var(--green-light); border: 1px solid #A8E4C0; }
+.do-box .dd-head { color: var(--green); font-weight: 700; margin-bottom: 4px; }
+.dont-box { background: var(--red-light); border: 1px solid #F5AAAA; }
+.dont-box .dd-head { color: var(--red); font-weight: 700; margin-bottom: 4px; }
+
+.bullet-list { margin-top: 8px; padding-left: 4px; }
+.bullet-item {
+display: flex; gap: 8px; align-items: flex-start;
+margin-bottom: 7px; font-size: 13.5px; color: var(--ink-soft);
+}
+.bullet-dot {
+width: 20px; height: 20px; border-radius: 50%;
+background: var(--teal-light); color: var(--teal);
+font-size: 10px; font-weight: 700;
+display: flex; align-items: center; justify-content: center;
+flex-shrink: 0; margin-top: 2px;
+}
+.bullet-dot.red { background: var(--red-light); color: var(--red); }
+.bullet-dot.amber { background: var(--amber-light); color: var(--amber); }
+.bullet-dot.green { background: var(--green-light); color: var(--green); }
+
+/* ── SWALLOWING TEST INTERACTIVE ── */
+.test-card {
+background: white; border-radius: 16px;
+margin: 0 16px 14px;
+box-shadow: 0 2px 8px rgba(13,124,110,0.07);
+border: 1px solid var(--rule); overflow: hidden;
+}
+.test-header {
+background: var(--teal);
+padding: 12px 15px;
+font-family: 'Kanit', sans-serif;
+font-size: 15px; font-weight: 600; color: white;
+display: flex; align-items: center; gap: 8px;
+}
+.test-body { padding: 14px 15px; }
+
+.water-test { display: flex; flex-direction: column; gap: 10px; }
+.water-step-row {
+display: flex; gap: 10px; align-items: flex-start;
+padding: 10px; border-radius: 10px;
+background: var(--teal-pale);
+border: 1px solid var(--teal-light);
+}
+.ws-icon { font-size: 24px; flex-shrink: 0; }
+.ws-text { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+.ws-text strong { color: var(--ink); font-family: 'Kanit', sans-serif; }
+
+.result-grid {
+display: grid; grid-template-columns: 1fr;
+gap: 8px; margin-top: 12px;
+}
+.result-row {
+border-radius: 10px; padding: 10px 12px;
+display: flex; gap: 10px; align-items: flex-start;
+font-size: 13px;
+}
+.result-row.pass { background: var(--green-light); border: 1px solid #A8E4C0; }
+.result-row.fail { background: var(--red-light); border: 1px solid #F5AAAA; }
+.result-row.watch{ background: var(--amber-light); border: 1px solid #F5C87A; }
+.result-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.result-label {
+font-family: 'Kanit', sans-serif; font-size: 12px; font-weight: 600;
+margin-bottom: 2px;
+}
+.result-row.pass .result-label { color: var(--green); }
+.result-row.fail .result-label { color: var(--red); }
+.result-row.watch .result-label { color: var(--amber); }
+.result-desc { color: var(--ink-soft); line-height: 1.5; }
+
+/* ── DANGER SIGNS GRID ── */
+.danger-grid {
+display: grid; grid-template-columns: 1fr 1fr;
+gap: 8px; padding: 0 16px 16px;
+}
+.danger-card {
+background: var(--red-light);
+border: 1.5px solid #F5AAAA;
+border-radius: 12px; padding: 12px;
+text-align: center;
+}
+.danger-icon { font-size: 28px; margin-bottom: 5px; }
+.danger-label {
+font-family: 'Kanit', sans-serif;
+font-size: 12px; font-weight: 600; color: var(--red); line-height: 1.3;
+}
+.danger-desc { font-size: 11px; color: #8B3A3A; margin-top: 3px; line-height: 1.4; }
+
+/* ── FOOD TEXTURE TABLE ── */
+.texture-wrap { padding: 0 16px 14px; }
+.texture-card {
+border-radius: 12px; margin-bottom: 8px; overflow: hidden;
+border: 1px solid var(--rule);
+}
+.texture-head {
+padding: 10px 13px;
+font-family: 'Kanit', sans-serif;
+font-size: 13px; font-weight: 600; color: white;
+display: flex; align-items: center; gap: 7px;
+}
+.texture-body {
+background: white; padding: 10px 13px;
+font-size: 13px; color: var(--ink-soft); line-height: 1.6;
+}
+.texture-body .eg {
+font-size: 12px; color: var(--muted); margin-top: 3px;
+}
+
+/* ── EMERGENCY BANNER ── */
+.emergency {
+margin: 14px 16px;
+background: var(--red);
+border-radius: 16px; padding: 15px 16px;
+color: white;
+}
+.emergency-title {
+font-family: 'Kanit', sans-serif;
+font-size: 17px; font-weight: 700;
+margin-bottom: 8px;
+display: flex; align-items: center; gap: 8px;
+}
+.emergency-list { font-size: 13.5px; line-height: 1.7; opacity: 0.95; }
+.emergency-list li { margin-left: 16px; margin-bottom: 2px; }
+.emergency-call {
+margin-top: 12px;
+background: rgba(255,255,255,0.2);
+border: 1.5px solid rgba(255,255,255,0.4);
+border-radius: 10px; padding: 10px 14px;
+text-align: center;
+font-family: 'Kanit', sans-serif;
+font-size: 16px; font-weight: 700;
+letter-spacing: 0.5px;
+}
+.emergency-call a { color: white; text-decoration: none; }
+
+/* ── CHECKLIST ── */
+.checklist-wrap { padding: 0 16px 16px; }
+.cl-item {
+display: flex; gap: 11px; align-items: flex-start;
+padding: 10px 12px; margin-bottom: 6px;
+background: white; border-radius: 10px;
+border: 1px solid var(--rule);
+font-size: 13.5px; color: var(--ink-soft);
+cursor: pointer; transition: background 0.12s;
+}
+.cl-item:hover { background: var(--teal-pale); }
+.cl-check {
+width: 22px; height: 22px; border-radius: 6px;
+border: 2px solid var(--rule); background: white;
+flex-shrink: 0; margin-top: 1px;
+display: flex; align-items: center; justify-content: center;
+transition: all 0.15s; font-size: 13px;
+}
+.cl-item.checked .cl-check {
+background: var(--teal); border-color: var(--teal); color: white;
+}
+.cl-item.checked { opacity: 0.65; }
+
+/* ── FOOTER ── */
+.page-footer {
+background: var(--teal);
+padding: 16px; margin-top: 8px;
+text-align: center; color: white;
+}
+.footer-logo { font-size: 28px; margin-bottom: 5px; }
+.footer-name {
+font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 600;
+}
+.footer-sub { font-size: 12px; opacity: 0.78; margin-top: 2px; line-height: 1.5; }
+.footer-line {
+margin-top: 12px;
+background: rgba(255,255,255,0.15);
+border-radius: 10px; padding: 9px 14px;
+font-size: 13px; font-weight: 600;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 400px) {
+.do-dont { grid-template-columns: 1fr; }
+.danger-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="site-header">
+<div class="header-inner">
+<div class="header-icon">🫁</div>
+<div class="header-text">
+<div class="header-title">ประเมินการกลืน — ผู้ดูแลที่บ้าน</div>
+<div class="header-sub">SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์</div>
+</div>
+<div class="header-badge">สำหรับญาติ</div>
+</div>
+</header>
+
+<!-- QUICK NAV -->
+<nav class="progress-nav">
+<a href="#sec-why" class="nav-chip active">ทำไมต้องประเมิน</a>
+<a href="#sec-before" class="nav-chip">ก่อนทดสอบ</a>
+<a href="#sec-test" class="nav-chip">ทดสอบการกลืน</a>
+<a href="#sec-result" class="nav-chip">ผลที่อาจพบ</a>
+<a href="#sec-food" class="nav-chip">เนื้ออาหาร</a>
+<a href="#sec-signs" class="nav-chip">สัญญาณอันตราย</a>
+<a href="#sec-check" class="nav-chip">Checklist</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+<div class="hero-eyebrow">คู่มือผู้ดูแลที่บ้าน</div>
+<div class="hero-title">ประเมินการกลืน<br>อย่างปลอดภัย</div>
+<div class="hero-desc">ผู้ป่วยโรคหลอดเลือดสมองมีความเสี่ยงสำลักอาหาร ซึ่งนำไปสู่ปอดอักเสบรุนแรง คู่มือนี้ช่วยผู้ดูแลสังเกตและป้องกันได้ถูกต้องค่ะ</div>
+<div class="hero-tags">
+<span class="hero-tag">👨‍👩‍👧 ผู้ดูแล/ญาติ</span>
+<span class="hero-tag">🏠 ใช้ที่บ้าน</span>
+<span class="hero-tag">⚠️ ไม่ใช่แทนแพทย์</span>
+</div>
+</div>
+
+<!-- SECTION 1 — WHY -->
+<div id="sec-why" class="section">
+<div class="section-header">
+<div class="section-num">1</div>
+<div>
+<div class="section-title">ทำไมต้องประเมินการกลืน?</div>
+<div class="section-sub">ความเสี่ยงที่ต้องรู้</div>
+</div>
+</div>
+
+<div class="alert-box warning">
+<span class="alert-icon">⚠️</span>
+<div>
+<div class="alert-title">Dysphagia พบใน 50–70% ของผู้ป่วย Stroke</div>
+<div class="alert-body">ภาวะกลืนลำบากเกิดจากกล้ามเนื้อลิ้น คอ และหลอดอาหารส่วนต้นอ่อนแรง ทำให้อาหาร/น้ำผ่านเข้าหลอดลมได้โดยไม่ไอ (Silent aspiration)</div>
+</div>
+</div>
+
+<div class="steps-wrap">
+<div class="step-card">
+<div class="step-head" onclick="toggleCard(this)">
+<div class="step-num">!</div>
+<div class="step-info">
+<div class="step-title">ผลอันตรายหากสำลักซ้ำ</div>
+<span class="step-tag tag-red">ต้องรู้</span>
+</div>
+<span class="step-chevron">›</span>
+</div>
+<div class="step-body">
+<div class="bullet-list">
+<div class="bullet-item">
+<div class="bullet-dot red">1</div>
+<span><strong>ปอดอักเสบจากการสำลัก</strong> (Aspiration pneumonia) — สาเหตุการเสียชีวิตอันดับต้นในผู้ป่วย Stroke</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot red">2</div>
+<span><strong>ภาวะขาดสารอาหาร</strong> — กินได้น้อย ร่างกายอ่อนแรงลง ฟื้นตัวช้าลง</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot red">3</div>
+<span><strong>ขาดน้ำ</strong> — ดื่มน้ำได้น้อย ทำให้ความดันตก เพิ่มความเสี่ยง Stroke ซ้ำ</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot red">4</div>
+<span><strong>คุณภาพชีวิตลดลง</strong> — กลัวกลืน กินอาหารไม่ได้สุข แยกตัวจากครอบครัว</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SECTION 2 — BEFORE TEST -->
+<div id="sec-before" class="section">
+<div class="section-header">
+<div class="section-num">2</div>
+<div>
+<div class="section-title">ก่อนทดสอบการกลืน</div>
+<div class="section-sub">เตรียมความพร้อมผู้ป่วยก่อนเสมอ</div>
+</div>
+</div>
+
+<div class="steps-wrap">
+
+<div class="step-card">
+<div class="step-head" onclick="toggleCard(this)">
+<div class="step-num">A</div>
+<div class="step-info">
+<div class="step-title">ประเมินความพร้อมของผู้ป่วยก่อน</div>
+<span class="step-tag tag-teal">ทำก่อนเสมอ</span>
+</div>
+<span class="step-chevron">›</span>
+</div>
+<div class="step-body">
+<div class="step-illus">
+🧠💭
+<div class="illus-label">ผู้ป่วยต้องตื่นและรู้สึกตัวดีก่อนทดสอบ</div>
+</div>
+<div class="step-prose">ผู้ป่วยต้องผ่าน <em>ทุกข้อ</em> ต่อไปนี้ก่อนทดสอบ:</div>
+<div class="bullet-list">
+<div class="bullet-item">
+<div class="bullet-dot green">✓</div>
+<span><strong>ตื่น รู้สึกตัวดี</strong> — ลืมตาได้ ตอบสนองเมื่อเรียก</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot green">✓</div>
+<span><strong>นั่งตัวตรงได้</strong> — หรือยกศีรษะสูงได้อย่างน้อย 60–90 องศา</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot green">✓</div>
+<span><strong>หายใจสม่ำเสมอ</strong> — ไม่หอบ ไม่มีเสียงดังผิดปกติ</span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot green">✓</div>
+<span><strong>ไม่มีไข้หรืออาการเจ็บป่วยเฉียบพลัน</strong></span>
+</div>
+<div class="bullet-item">
+<div class="bullet-dot green">✓</div>
+<span><strong>ปากและฟันสะอาด</strong> — ทำความสะอาดช่องปากก่อนมื้ออาหารทุกครั้ง</span>
+</div>
+</div>
+<div class="alert-box danger" style="margin:10px 0 0">
+<span class="alert-icon">🛑</span>
+<div>
+<div class="alert-title">ห้ามทดสอบ ถ้า…</div>
+<div class="alert-body">ซึมมาก ไม่ตอบสนอง / หายใจลำบาก / มีไข้สูง / เพิ่งอาเจียน</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="step-card">
+<div class="step-head" onclick="toggleCard(this)">
+<div class="step-num">B</div>
+<div class="step-info">
+<div class="step-title">เตรียมท่าที่ถูกต้อง</div>
+<span class="step-tag tag-teal">สำคัญมาก</span>
+</div>
+<span class="step-chevron">›</span>
+</div>
+<div class="step-body">
+<div class="step-illus" style="font-size:52px">🪑
+<div class="illus-label">นั่งตัวตรง หรือยกหัวเตียง 60–90 องศา</div>
+</div>
+<div class="do-dont">
+<div class="do-box">
+<div class="dd-head">✅ ควรทำ</div>
+นั่งตัวตรง 90° หรือยกหัวเตียง ≥ 60°<br>
+เท้าวางราบกับพื้น<br>
+คางชี้ลงเล็กน้อย (chin tuck)<br>
+สิ่งแวดล้อมเงียบ ไม่มีสิ่งรบกวน
+</div>
+<div class="dont-box">
+<div class="dd-head">❌ ห้ามทำ</div>
+นอนราบหรือพิงหมอนน้อยเกินไป<br>
+เงยหน้าขึ้นขณะกลืน<br>
+รีบเร่งป้อนอาหาร<br>
+คุยโทรศัพท์ขณะป้อน
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!-- SECTION 3 — WATER TEST -->
+<div id="sec-test" class="section">
+<div class="section-header">
+<div class="section-num">3</div>
+<div>
+<div class="section-title">ทดสอบการกลืนน้ำ</div>
+<div class="section-sub">Modified Water Swallowing Test — ฉบับผู้ดูแล</div>
+</div>
+</div>
+
+<div class="alert-box info" style="margin-top:0">
+<span class="alert-icon">💡</span>
+<div>
+<div class="alert-title">ใช้น้ำเปล่าธรรมดา อุณหภูมิห้อง</div>
+<div class="alert-body">เตรียมช้อนชา (5 ml) และแก้วน้ำ ทำในช่วงที่ผู้ป่วยตื่นตัวดีที่สุด มักเป็นเช้าหลังพักผ่อนเพียงพอ</div>
+</div>
+</div>
+
+<div class="test-card">
+<div class="test-header">
+🧪 ขั้นตอนทดสอบทีละขั้น
+</div>
+<div class="test-body">
+<div class="water-test">
+<div class="water-step-row">
+<span class="ws-icon">1️⃣</span>
+<div class="ws-text">
+<strong>เริ่มด้วยน้ำ 1 ช้อนชา (5 ml)</strong><br>
+ใส่ช้อนวางบนลิ้น รอให้ผู้ป่วยกลืนเอง ไม่ต้องเร่ง
+</div>
+</div>
+<div class="water-step-row">
+<span class="ws-icon">👀</span>
+<div class="ws-text">
+<strong>สังเกตระหว่างและหลังกลืนทันที</strong><br>
+ดูที่ลำคอ (กล่องเสียงขยับขึ้น-ลง?) ฟังเสียงกลืน ดูว่าไออาเจียนไหม
+</div>
+</div>
+<div class="water-step-row">
+<span class="ws-icon">2️⃣</span>
+<div class="ws-text">
+<strong>หากปลอดภัย — เพิ่มเป็น 3 ช้อนชา (15 ml)</strong><br>
+ทำซ้ำขั้นตอนเดิม รอ 30 วินาทีก่อนให้ครั้งต่อไป
+</div>
+</div>
+<div class="water-step-row">
+<span class="ws-icon">3️⃣</span>
+<div class="ws-text">
+<strong>หากผ่าน 15 ml — ลองน้ำครึ่งแก้ว (50–60 ml)</strong><br>
+ให้จิบช้าๆ ทีละน้อย สังเกตอย่างต่อเนื่อง
+</div>
+</div>
+<div class="water-step-row">
+<span class="ws-icon">⏸️</span>
+<div class="ws-text">
+<strong>หยุดทันทีถ้ามีสัญญาณอันตราย</strong><br>
+ไอ สำลัก เสียงแหบ ออกซิเจนตก → บันทึกและแจ้งพยาบาล
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SECTION 4 — RESULTS -->
+<div id="sec-result" class="section">
+<div class="section-header">
+<div class="section-num">4</div>
+<div>
+<div class="section-title">ผลที่อาจพบและการปฏิบัติ</div>
+<div class="section-sub">สังเกตอาการและตัดสินใจ</div>
+</div>
+</div>
+
+<div style="padding: 0 16px 4px;">
+<div class="result-grid">
+<div class="result-row pass">
+<span class="result-icon">✅</span>
+<div>
+<div class="result-label">กลืนได้ปกติ</div>
+<div class="result-desc">กลืนน้ำได้ ไม่ไอ ไม่สำลัก เสียงปกติ<br>→ เริ่มอาหารได้ตามเนื้อสัมผัสที่แพทย์กำหนด</div>
+</div>
+</div>
+<div class="result-row watch">
+<span class="result-icon">⚠️</span>
+<div>
+<div class="result-label">ไอเล็กน้อย / กลืนช้า</div>
+<div class="result-desc">ไอ 1–2 ครั้งหลังกลืน เสียงเปลี่ยนเล็กน้อย<br>→ ปรับเนื้ออาหารข้นขึ้น ปรึกษาพยาบาล</div>
+</div>
+</div>
+<div class="result-row fail">
+<span class="result-icon">🛑</span>
+<div>
+<div class="result-label">สำลัก / ไอมาก / หายใจลำบาก</div>
+<div class="result-desc">ไออย่างรุนแรง หน้าแดง ออกซิเจนตก เสียงแหบ<br>→ หยุดป้อนทันที จัดท่านั่ง โทรแจ้งพยาบาล</div>
+</div>
+</div>
+<div class="result-row fail">
+<span class="result-icon">😶</span>
+<div>
+<div class="result-label">กลืนได้แต่ไม่ไอ (Silent aspiration)</div>
+<div class="result-desc">น้ำผ่านเข้าหลอดลมแต่ไม่ไอ — อันตรายมาก<br>→ สังเกตออกซิเจน เสียงกลืน "wet voice" หลังกลืน</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="alert-box info" style="margin-top:4px">
+<span class="alert-icon">🎙️</span>
+<div>
+<div class="alert-title">ทดสอบ "Wet Voice"</div>
+<div class="alert-body">ให้ผู้ป่วยออกเสียง "อา" ยาวๆ หลังกลืนน้ำ ถ้าเสียงเปียกแฉะ กลั้ว หรือ gurgling = มีน้ำค้างในกล่องเสียง → แจ้งพยาบาลทันที</div>
+</div>
+</div>
+</div>
+
+<!-- SECTION 5 — FOOD TEXTURE -->
+<div id="sec-food" class="section">
+<div class="section-header">
+<div class="section-num">5</div>
+<div>
+<div class="section-title">เนื้ออาหารที่เหมาะสม</div>
+<div class="section-sub">IDDSI Framework — ระดับความข้น/นุ่ม</div>
+</div>
+</div>
+
+<div class="texture-wrap">
+
+<div class="texture-card">
+<div class="texture-head" style="background:#E63946">
+🚫 ระดับ 0 — ห้ามให้
+</div>
+<div class="texture-body">
+<strong>อาหารชิ้นใหญ่ แข็ง เหนียว เมล็ด</strong><br>
+ห้ามจนกว่าแพทย์จะอนุญาต
+<div class="eg">❌ ข้าวเหนียว ลูกชิ้น ถั่วเปลือก เนื้อติดกระดูก ผลไม้เส้นใยมาก</div>
+</div>
+</div>
+
+<div class="texture-card">
+<div class="texture-head" style="background:#F5A623">
+🍮 ระดับ 4 — อาหารบดละเอียด / Puree
+</div>
+<div class="texture-body">
+<strong>อาหารนุ่มมาก ไม่ต้องเคี้ยว เกาะรวมกัน</strong>
+<div class="eg">✅ โจ๊กบด มันบด ไข่ตุ๋น เต้าหู้นิ่ม กล้วยบด</div>
+</div>
+</div>
+
+<div class="texture-card">
+<div class="texture-head" style="background:#1A7F74">
+🍲 ระดับ 5 — อาหารสับละเอียด / Minced
+</div>
+<div class="texture-body">
+<strong>ชิ้นเล็ก ≤ 4 mm เคี้ยวน้อย ไม่เหนียว</strong>
+<div class="eg">✅ ข้าวต้มเนื้อสับ ปลานึ่งฉีก ผักนุ่มสับ ไข่ดาวสุกทั้งใบ</div>
+</div>
+</div>
+
+<div class="texture-card">
+<div class="texture-head" style="background:#27AE60">
+🍽️ ระดับ 6 — อาหารนุ่ม / Soft
+</div>
+<div class="texture-body">
+<strong>นุ่ม เคี้ยวง่าย ไม่แข็ง ไม่เหนียว</strong>
+<div class="eg">✅ ข้าวสวยธรรมดา เนื้อตุ๋น ผักนึ่งนุ่ม ปลาย่าง กล้วยสุก</div>
+</div>
+</div>
+
+<div class="texture-card">
+<div class="texture-head" style="background:#8B5CF6">
+🥤 ของเหลว — ปรับความข้น
+</div>
+<div class="texture-body">
+<strong>น้ำเปล่าอาจเสี่ยงสำลัก — ใช้ผงข้นพิเศษ (Thickener)</strong>
+<div class="eg">✅ น้ำข้นระดับ nectar (เหมือนน้ำส้ม) หรือ honey (เหมือนน้ำผึ้ง)<br>ตามคำแนะนำพยาบาล/นักกำหนดอาหาร</div>
+</div>
+</div>
+
+</div>
+
+<div class="alert-box warning">
+<span class="alert-icon">💡</span>
+<div>
+<div class="alert-title">เคล็ดลับการป้อนอาหาร</div>
+<div class="alert-body">
+ป้อนทีละ <strong>1 ช้อนชา (5 ml)</strong> รอให้กลืนหมดก่อนป้อนต่อ · ใช้เวลาอย่างน้อย <strong>30–45 นาที</strong>ต่อมื้อ · ผู้ป่วยนั่งตรงอย่างน้อย <strong>30 นาที</strong>หลังกินเสร็จ
+</div>
+</div>
+</div>
+</div>
+
+<!-- SECTION 6 — DANGER SIGNS -->
+<div id="sec-signs" class="section">
+<div class="section-header">
+<div class="section-num">6</div>
+<div>
+<div class="section-title">สัญญาณอันตราย — โทรหาพยาบาลทันที</div>
+<div class="section-sub">อย่ารอดูอาการ</div>
+</div>
+</div>
+
+<div class="danger-grid">
+<div class="danger-card">
+<div class="danger-icon">🤧</div>
+<div class="danger-label">ไอมากขณะหรือหลังกิน</div>
+<div class="danger-desc">ไออย่างรุนแรง หายใจไม่ออกหลังกลืน</div>
+</div>
+<div class="danger-card">
+<div class="danger-icon">😤</div>
+<div class="danger-label">หายใจลำบาก</div>
+<div class="danger-desc">หอบ หายใจเร็ว ได้ยินเสียงวี้ดขณะหายใจ</div>
+</div>
+<div class="danger-card">
+<div class="danger-icon">🗣️</div>
+<div class="danger-label">เสียงเปลี่ยน / Wet Voice</div>
+<div class="danger-desc">เสียงแหบ กลั้ว เปียกชื้นหลังกลืน</div>
+</div>
+<div class="danger-card">
+<div class="danger-icon">🤢</div>
+<div class="danger-label">อาเจียน / สำลักรุนแรง</div>
+<div class="danger-desc">อาหารหรือน้ำพุ่งออกมาทางปากหรือจมูก</div>
+</div>
+<div class="danger-card">
+<div class="danger-icon">🫧</div>
+<div class="danger-label">ออกซิเจนตกต่ำ</div>
+<div class="danger-desc">ปลายนิ้วเขียว ริมฝีปากคล้ำ ≤ 94% (ถ้ามีเครื่องวัด)</div>
+</div>
+<div class="danger-card">
+<div class="danger-icon">🌡️</div>
+<div class="danger-label">มีไข้หลังกินอาหาร</div>
+<div class="danger-desc">ไข้ ≥ 38°C หลัง 24–48 ชม. อาจเป็นปอดอักเสบ</div>
+</div>
+</div>
+
+<div class="emergency">
+<div class="emergency-title">🚨 กรณีฉุกเฉิน — ทำทันที</div>
+<ul class="emergency-list">
+<li>หยุดป้อนอาหาร/น้ำทันที</li>
+<li>จัดท่านั่ง ก้มศีรษะไปข้างหน้า</li>
+<li>ถ้าสำลักและหายใจไม่ได้ → ทำ Heimlich maneuver</li>
+<li>ถ้าหมดสติ → CPR + โทร 1669</li>
+</ul>
+<div class="emergency-call">
+<a href="tel:1669">📞 1669 — EMS ฉุกเฉิน</a>
+</div>
+<div class="emergency-call" style="margin-top:6px; background:rgba(255,255,255,0.12)">
+<a href="tel:1669">📞 — 1669ประสงค์</a>
+</div>
+</div>
+</div>
+
+<!-- SECTION 7 — CHECKLIST -->
+<div id="sec-check" class="section">
+<div class="section-header">
+<div class="section-num">7</div>
+<div>
+<div class="section-title">Checklist ก่อนป้อนอาหารทุกมื้อ</div>
+<div class="section-sub">กดติ๊กทีละข้อ</div>
+</div>
+</div>
+
+<div class="checklist-wrap" id="checklist">
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ผู้ป่วยตื่น รู้สึกตัวดี ตอบสนองได้</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>นั่งตัวตรง หรือยกหัวเตียง ≥ 60–90 องศา</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ทำความสะอาดช่องปากก่อนมื้ออาหารแล้ว</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>เตรียมอาหารเนื้อสัมผัสถูกต้องตามที่แพทย์กำหนด</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ของเหลวผสมผงข้น (ถ้าแพทย์สั่ง) พร้อมแล้ว</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ทดสอบน้ำ 1 ช้อนชาก่อน — ไม่มีสัญญาณอันตราย</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ป้อนทีละ 1 ช้อนชา รอกลืนหมดก่อนป้อนต่อ</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ไม่พูดคุย ไม่รบกวน ระหว่างผู้ป่วยกลืน</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>หลังกินเสร็จ — ให้นั่งตัวตรงต่ออีกอย่างน้อย 30 นาที</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>ทำความสะอาดช่องปากหลังมื้ออาหารแล้ว</span>
+</div>
+<div class="cl-item" onclick="toggleCheck(this)">
+<div class="cl-check"></div>
+<span>บันทึกปริมาณอาหาร/น้ำที่กินได้ในสมุดบันทึก</span>
+</div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+<div class="footer-logo">🧠</div>
+<div class="footer-name">SPS Stroke Care</div>
+<div class="footer-sub">
+Stroke Unit · โรงพยาบาลสรรพสิทธิประสงค์<br>
+เขตสุขภาพที่ 10 · อุบลราชธานี
+</div>
+<div class="footer-line">
+💬 LINE OA: SPS Stroke Care<br>
+<span style="font-size:11px;opacity:0.8">สอบถามได้ตลอด 24 ชั่วโมง</span>
+</div>
+<div style="font-size:11px;opacity:0.6;margin-top:10px">
+⚠️ คู่มือนี้ใช้ประกอบการดูแล ไม่ใช่แทนคำแนะนำจากแพทย์หรือพยาบาล<br>
+หากไม่แน่ใจ โทรปรึกษาก่อนเสมอ
+</div>
+</footer>
+
+<script>
+// Toggle accordion
+function toggleCard(head) {
+const card = head.closest('.step-card');
+card.classList.toggle('open');
+}
+
+// Toggle checklist item
+function toggleCheck(item) {
+item.classList.toggle('checked');
+const check = item.querySelector('.cl-check');
+check.textContent = item.classList.contains('checked') ? '✓' : '';
+}
+
+// Nav chip highlight on scroll
+const sections = document.querySelectorAll('[id^="sec-"]');
+const chips = document.querySelectorAll('.nav-chip');
+
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+chips.forEach(c => c.classList.remove('active'));
+const target = document.querySelector(`.nav-chip[href="#${entry.target.id}"]`);
+if (target) {
+target.classList.add('active');
+target.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+}
+});
+}, { threshold: 0.4 });
+
+sections.forEach(s => observer.observe(s));
+
+// Open first card in each section by default
+document.querySelectorAll('.step-card').forEach((card, i) => {
+if (i === 0) card.classList.add('open');
+});
+</script>
+</body>
+</html>
