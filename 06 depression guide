@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ภาวะซึมเศร้าหลัง Stroke — SPS Stroke Care</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Kanit:wght@600;700;800&display=swap');
+:root{
+--teal:#0D7C6E;--teal-lt:#E2F5F3;--teal-pale:#F0FAF9;
+--blue:#2563EB;--blue-lt:#EFF6FF;
+--purple:#7C3AED;--purple-lt:#F5F3FF;
+--amber:#E8870A;--amber-lt:#FFF4E0;
+--red:#D63031;--red-lt:#FDE8E8;
+--green:#27AE60;--green-lt:#E9F8EF;
+--ink:#1C2B2A;--ink-s:#3D5250;--muted:#718E8C;
+--rule:#D4E8E5;--bg:#F5FAF9;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:32px;}
+
+.hdr{background:var(--purple);padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(124,58,237,0.25);}
+.hdr-icon{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hdr-title{font-family:'Kanit',sans-serif;font-size:17px;font-weight:700;color:white;}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.8);margin-top:1px;}
+
+/* TAB */
+.tab-bar{background:white;border-bottom:2px solid var(--rule);display:flex;}
+.tab{flex:1;padding:13px 8px;text-align:center;font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;}
+.tab.on{color:var(--purple);border-bottom-color:var(--purple);}
+
+.page{display:none;}
+.page.show{display:block;}
+
+/* HERO */
+.hero{padding:20px 16px;color:white;}
+.hero-title{font-family:'Kanit',sans-serif;font-size:22px;font-weight:800;line-height:1.25;margin-bottom:8px;}
+.hero-sub{font-size:14px;opacity:.9;line-height:1.65;}
+.hero-tag{display:inline-block;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-top:10px;margin-right:6px;}
+
+/* STAT BOX */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;margin-bottom:14px;}
+.stat-card{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 3px 10px rgba(0,0,0,0.07);border:1.5px solid var(--rule);}
+.stat-num{font-family:'Kanit',sans-serif;font-size:36px;font-weight:800;line-height:1;}
+.stat-label{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.4;}
+
+/* CARD */
+.card{margin:0 14px 14px;background:white;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.07);border:1.5px solid var(--rule);}
+.card-hd{padding:13px 16px;display:flex;align-items:center;gap:9px;border-bottom:1.5px solid var(--rule);}
+.card-hd-icon{font-size:22px;}
+.card-hd-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;color:var(--ink);}
+.card-body{padding:15px 16px;}
+
+/* SIGN LIST */
+.sign-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink-s);}
+.sign-item:last-child{border-bottom:none;}
+.sign-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.sign-text strong{color:var(--ink);display:block;font-size:14px;margin-bottom:2px;}
+
+/* PHQ QUIZ */
+.phq-intro{font-size:14px;color:var(--ink-s);line-height:1.65;margin-bottom:14px;}
+.phq-item{background:var(--purple-lt);border-radius:14px;padding:13px 15px;margin-bottom:10px;border:1.5px solid #DDD6FE;}
+.phq-q{font-family:'Kanit',sans-serif;font-size:14px;font-weight:700;color:var(--purple);margin-bottom:10px;line-height:1.4;}
+.phq-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.phq-opt{padding:9px 8px;border-radius:10px;border:2px solid #DDD6FE;background:white;font-family:'Sarabun',sans-serif;font-size:13px;color:var(--ink-s);cursor:pointer;text-align:center;transition:all .15s;}
+.phq-opt.on{border-color:var(--purple);background:var(--purple);color:white;font-weight:700;}
+.phq-result{margin:14px 0 0;border-radius:14px;padding:14px 15px;display:none;}
+.phq-result.none{background:var(--green-lt);border:2px solid #A8E4C0;}
+.phq-result.mild{background:var(--amber-lt);border:2px solid #F5C87A;}
+.phq-result.mod{background:var(--red-lt);border:2px solid #F5AAAA;}
+.phq-result.severe{background:var(--red);color:white;}
+.phq-res-title{font-family:'Kanit',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px;}
+.phq-res-body{font-size:13px;line-height:1.65;}
+.phq-score-bar{height:10px;border-radius:20px;background:var(--rule);margin:12px 0 4px;overflow:hidden;}
+.phq-score-fill{height:100%;border-radius:20px;transition:width .5s;}
+.phq-score-label{font-size:11px;color:var(--muted);text-align:right;}
+
+/* TIPS */
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tip-card{background:var(--purple-lt);border-radius:14px;padding:12px;text-align:center;border:1.5px solid #DDD6FE;}
+.tip-icon{font-size:32px;margin-bottom:6px;}
+.tip-title{font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;color:var(--purple);margin-bottom:3px;}
+.tip-desc{font-size:12px;color:var(--ink-s);line-height:1.5;}
+
+/* CAREGIVER */
+.care-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink-s);align-items:flex-start;}
+.care-item:last-child{border-bottom:none;}
+.care-num{width:28px;height:28px;border-radius:50%;background:var(--teal);color:white;font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+/* ALERT */
+.alert-box{border-radius:14px;padding:13px 15px;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;}
+.alert-box.info{background:var(--blue-lt);border:1.5px solid #93C5FD;}
+.alert-box.warn{background:var(--amber-lt);border:1.5px solid #F5C87A;}
+.al-icon{font-size:22px;flex-shrink:0;}
+.al-title{font-family:'Kanit',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;}
+.alert-box.info .al-title{color:var(--blue);}
+.alert-box.warn .al-title{color:var(--amber);}
+.al-body{font-size:13px;color:var(--ink-s);line-height:1.6;}
+
+.footer{background:var(--purple);padding:14px 16px;text-align:center;color:white;margin-top:8px;font-size:12px;line-height:1.7;opacity:.9;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+<div class="hdr-icon">💜</div>
+<div>
+<div class="hdr-title">ภาวะซึมเศร้าหลัง Stroke</div>
+<div class="hdr-sub">Post-Stroke Depression · SPS Stroke Care</div>
+</div>
+</div>
+
+<div class="tab-bar">
+<button class="tab on" onclick="showTab('patient',this)">💜 ผู้ป่วย</button>
+<button class="tab" onclick="showTab('screen',this)">📋 ประเมินตัวเอง</button>
+<button class="tab" onclick="showTab('caregiver',this)">👨‍👩‍👧 ผู้ดูแล</button>
+</div>
+
+<!-- ═══ PATIENT PAGE ═══ -->
+<div class="page show" id="patient">
+<div class="hero" style="background:linear-gradient(135deg,#7C3AED,#9D5CE5)">
+<div class="hero-title">💜 ความรู้สึกเศร้า<br>เกิดขึ้นได้ค่ะ</div>
+<div class="hero-sub">ไม่ใช่ความอ่อนแอ ไม่ใช่ความผิดของคุณ<br>เป็นภาวะทางการแพทย์ที่รักษาได้ค่ะ</div>
+<span class="hero-tag">🧠 เกิดจากสมอง ไม่ใช่จิตใจอ่อนแอ</span>
+<span class="hero-tag">💊 รักษาได้</span>
+</div>
+
+<div style="padding:14px 0 0">
+<div class="stat-row">
+<div class="stat-card">
+<div class="stat-num" style="color:var(--purple)">1 ใน 3</div>
+<div class="stat-label">ผู้ป่วย Stroke<br>มีภาวะนี้</div>
+</div>
+<div class="stat-card">
+<div class="stat-num" style="color:var(--teal)">90%</div>
+<div class="stat-label">รักษาได้ดี<br>ถ้าพบเร็ว</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-hd"><span class="card-hd-icon">💜</span><span class="card-hd-title">ทำไมถึงเกิดภาวะนี้?</span></div>
+<div class="card-body">
+<div class="alert-box info">
+<span class="al-icon">🧠</span>
+<div>
+<div class="al-title">เกิดจากสมอง ไม่ใช่ความอ่อนแอ</div>
+<div class="al-body">เมื่อ Stroke ทำลายสมอง สารเคมีในสมองที่ควบคุมอารมณ์ (Serotonin, Dopamine) เสียสมดุล ทำให้เกิดภาวะซึมเศร้าได้โดยตรงค่ะ ไม่ใช่เพราะคุณ "คิดมาก"</div>
+</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">😔</span>
+<div><strong>รู้สึกเศร้า หมดหวัง ว่างเปล่า</strong>เกือบทุกวัน หรือรู้สึกร้องไห้โดยไม่รู้สาเหตุ</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">😶</span>
+<div><strong>ไม่อยากทำอะไร สิ่งที่เคยชอบก็ไม่สนุกแล้ว</strong>เช่น ดูทีวี คุยกับครอบครัว</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">😴</span>
+<div><strong>นอนไม่หลับ หรือนอนมากเกินไป</strong>ตื่นกลางดึกบ่อย หรือนอนทั้งวันก็ยังง่วง</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">🍽️</span>
+<div><strong>เบื่ออาหาร น้ำหนักลดโดยไม่ตั้งใจ</strong>หรือบางรายกินมากขึ้นผิดปกติ</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">😟</span>
+<div><strong>รู้สึกตัวเองไม่มีคุณค่า เป็นภาระ</strong>คิดว่าตัวเองทำให้ครอบครัวลำบาก</div>
+</div>
+<div class="sign-item">
+<span class="sign-icon">😤</span>
+<div><strong>หงุดหวิด โกรธง่าย หรือวิตกกังวลมาก</strong>โดยไม่มีสาเหตุชัดเจน</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-hd"><span class="card-hd-icon">💪</span><span class="card-hd-title">สิ่งที่ช่วยได้จริงค่ะ</span></div>
+<div class="card-body">
+<div class="tip-grid">
+<div class="tip-card">
+<div class="tip-icon">🚶</div>
+<div class="tip-title">ออกกำลังกายเบาๆ</div>
+<div class="tip-desc">เดิน 15-20 นาที/วัน ช่วยเพิ่มสาร Endorphin ในสมอง</div>
+</div>
+<div class="tip-card">
+<div class="tip-icon">☀️</div>
+<div class="tip-title">รับแสงแดดตอนเช้า</div>
+<div class="tip-desc">ออกนอกบ้าน 15-20 นาที ช่วยปรับนาฬิกาชีวิต</div>
+</div>
+<div class="tip-card">
+<div class="tip-icon">👨‍👩‍👧</div>
+<div class="tip-title">พูดคุยกับครอบครัว</div>
+<div class="tip-desc">บอกความรู้สึกตรงๆ อย่าเก็บไว้คนเดียวค่ะ</div>
+</div>
+<div class="tip-card">
+<div class="tip-icon">🎵</div>
+<div class="tip-title">ทำกิจกรรมที่ชอบ</div>
+<div class="tip-desc">ฟังเพลง ดูทีวี สวดมนต์ ทำในระดับที่ทำได้</div>
+</div>
+<div class="tip-card">
+<div class="tip-icon">🏥</div>
+<div class="tip-title">แจ้งแพทย์</div>
+<div class="tip-desc">ยาต้านซึมเศร้าช่วยได้มาก อย่าอาย ไม่ใช่ความผิดปกติ</div>
+</div>
+<div class="tip-card">
+<div class="tip-icon">📿</div>
+<div class="tip-title">ศาสนา / สมาธิ</div>
+<div class="tip-desc">สวดมนต์ นั่งสมาธิ ช่วยให้จิตใจสงบขึ้นค่ะ</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card" style="border-color:var(--red)">
+<div class="card-hd" style="background:var(--red-lt)"><span class="card-hd-icon">🚨</span><span class="card-hd-title" style="color:var(--red)">บอกแพทย์ทันที ถ้ารู้สึกแบบนี้</span></div>
+<div class="card-body">
+<div class="sign-item"><span class="sign-icon">💭</span><div><strong>คิดอยากทำร้ายตัวเอง</strong>หรือคิดว่าไม่อยากมีชีวิตอยู่ → แจ้งคนในบ้านและแพทย์ทันที</div></div>
+<div class="sign-item"><span class="sign-icon">🚪</span><div><strong>รู้สึกอยากหนีจากทุกอย่าง</strong>ไม่อยากพบเจอใคร ปิดตัวเองมากขึ้นเรื่อยๆ</div></div>
+<div class="sign-item"><span class="sign-icon">😶‍🌫️</span><div><strong>ไม่ดูแลตัวเอง</strong>ไม่กินยา ไม่กินข้าว ไม่อาบน้ำ หลายวันติดกัน</div></div>
+<div style="margin-top:12px;background:var(--red);border-radius:12px;padding:12px;text-align:center;cursor:pointer;" onclick="window.location.href='tel:1323'">
+<div style="font-family:Kanit;font-size:16px;font-weight:700;color:white;">📞 สายด่วนสุขภาพจิต 1323</div>
+<div style="font-size:12px;color:rgba(255,255,255,0.85);margin-top:3px">ฟรี 24 ชั่วโมง โทรได้เลยค่ะ</div>
+</div>
+</div>
+</div>
+
+<div style="margin:0 14px 14px;background:var(--purple-lt);border:1.5px solid #DDD6FE;border-radius:16px;padding:15px 16px;">
+<div style="font-family:Kanit;font-size:15px;font-weight:700;color:var(--purple);margin-bottom:8px">💜 จากใจพยาบาล</div>
+<div style="font-size:14px;color:var(--ink-s);line-height:1.75;">
+"การรู้สึกเศร้าหลัง Stroke ไม่ใช่ความอ่อนแอ ไม่ใช่ความผิดของคุณ และไม่ใช่สิ่งที่ต้องอดทนเงียบๆ คนเดียวค่ะ<br><br>
+คุณผ่านเรื่องที่ยากมากมาได้แล้ว บอกให้เราช่วยได้เลยนะค่ะ"<br><br>
+<span style="color:var(--teal);font-weight:600">— ทีมพยาบาล Stroke Unit รพ.สรรพสิทธิประสงค์</span>
+</div>
+</div>
+</div>
+
+<!-- ═══ SCREEN PAGE ═══ -->
+<div class="page" id="screen">
+<div class="hero" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">
+<div class="hero-title">📋 ประเมินอารมณ์<br>ด้วยตัวเอง</div>
+<div class="hero-sub">PHQ-9 ฉบับย่อ — ใช้ประเมินเบื้องต้นค่ะ<br>ไม่ใช่การวินิจฉัยโรค</div>
+</div>
+
+<div style="padding:14px">
+<div class="phq-intro">
+ใน <strong>2 สัปดาห์ที่ผ่านมา</strong> คุณมีความรู้สึกเหล่านี้บ่อยแค่ไหน?<br>
+กดเลือกตอบทุกข้อนะค่ะ
+</div>
+
+<div id="phqForm">
+<div class="phq-item" data-q="0">
+<div class="phq-q">1. รู้สึกเศร้า หมดหวัง หรือท้อแท้</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,0,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,0,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,0,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,0,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="1">
+<div class="phq-q">2. ไม่มีความสุขกับสิ่งที่เคยชอบ</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,1,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,1,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,1,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,1,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="2">
+<div class="phq-q">3. นอนไม่หลับ หรือนอนมากเกินไป</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,2,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,2,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,2,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,2,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="3">
+<div class="phq-q">4. เหนื่อย อ่อนเพลีย ไม่มีแรง</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,3,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,3,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,3,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,3,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="4">
+<div class="phq-q">5. เบื่ออาหาร หรือกินมากเกินไป</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,4,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,4,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,4,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,4,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="5">
+<div class="phq-q">6. รู้สึกตัวเองไม่มีคุณค่า หรือเป็นภาระ</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,5,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,5,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,5,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,5,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="6">
+<div class="phq-q">7. สมาธิสั้น ทำอะไรช้าลง หรือกระสับกระส่าย</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,6,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,6,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,6,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,6,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+<div class="phq-item" data-q="7">
+<div class="phq-q">8. คิดอยากทำร้ายตัวเอง หรือไม่อยากมีชีวิต</div>
+<div class="phq-opts">
+<button class="phq-opt" onclick="setPhq(this,7,0)">ไม่เลย (0)</button>
+<button class="phq-opt" onclick="setPhq(this,7,1)">บางวัน (1)</button>
+<button class="phq-opt" onclick="setPhq(this,7,2)">มากกว่าครึ่ง (2)</button>
+<button class="phq-opt" onclick="setPhq(this,7,3)">แทบทุกวัน (3)</button>
+</div>
+</div>
+
+<button onclick="calcPhq()" style="width:100%;padding:14px;background:var(--purple);border:none;border-radius:14px;font-family:Kanit;font-size:17px;font-weight:700;color:white;cursor:pointer;margin-top:4px;">
+📊 ดูผลการประเมิน
+</button>
+</div>
+
+<div class="phq-result" id="phqResult">
+<div class="phq-res-title" id="phqResTitle"></div>
+<div class="phq-score-bar"><div class="phq-score-fill" id="phqFill"></div></div>
+<div class="phq-score-label" id="phqScoreLabel"></div>
+<div class="phq-res-body" id="phqResBody"></div>
+</div>
+
+<div style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;line-height:1.6">
+⚠️ แบบประเมินนี้ใช้คัดกรองเบื้องต้นเท่านั้น<br>
+ผลไม่ใช่การวินิจฉัยโรค ควรพบแพทย์เพื่อยืนยันค่ะ
+</div>
+</div>
+</div>
+
+<!-- ═══ CAREGIVER PAGE ═══ -->
+<div class="page" id="caregiver">
+<div class="hero" style="background:linear-gradient(135deg,#0D7C6E,#1A9F8F)">
+<div class="hero-title">👨‍👩‍👧 คู่มือผู้ดูแล<br>รับมือภาวะซึมเศร้า</div>
+<div class="hero-sub">ผู้ดูแลมีบทบาทสำคัญมาก ในการช่วยให้ผู้ป่วยฟื้นตัวค่ะ</div>
+</div>
+
+<div style="padding:14px 0 0">
+<div class="card">
+<div class="card-hd"><span class="card-hd-icon">🔍</span><span class="card-hd-title">สังเกตสัญญาณเหล่านี้</span></div>
+<div class="card-body">
+<div class="sign-item"><span class="sign-icon">😶</span><div><strong>พูดน้อยลงมาก</strong>ที่เคยคุยสนุก ตอนนี้เงียบ ไม่ตอบสนอง</div></div>
+<div class="sign-item"><span class="sign-icon">🍽️</span><div><strong>ไม่ยอมกินข้าว</strong>ต้องง้อนาน หรือกินได้น้อยมากหลายวันติดกัน</div></div>
+<div class="sign-item"><span class="sign-icon">💊</span><div><strong>ไม่ยอมกินยา</strong>บอกว่าหายแล้ว ไม่จำเป็น หรือไม่อยากกิน</div></div>
+<div class="sign-item"><span class="sign-icon">😢</span><div><strong>ร้องไห้บ่อย</strong>โดยไม่มีสาเหตุ หรือบอกว่าอยากตาย</div></div>
+<div class="sign-item"><span class="sign-icon">🛏️</span><div><strong>นอนทั้งวัน</strong>ไม่ยอมลุกทำกายภาพ ปฏิเสธทุกกิจกรรม</div></div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-hd"><span class="card-hd-icon">💬</span><span class="card-hd-title">พูดแบบนี้ช่วยได้ค่ะ</span></div>
+<div class="card-body">
+<div style="background:var(--green-lt);border:1.5px solid #A8E4C0;border-radius:12px;padding:12px 14px;margin-bottom:10px;">
+<div style="font-family:Kanit;font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px">✅ พูดแบบนี้</div>
+<div style="font-size:13.5px;color:var(--ink-s);line-height:1.8">
+"รู้ว่าตอนนี้ยากมาก แต่เราอยู่ตรงนี้ด้วยกันนะ"<br>
+"ไม่ต้องรีบ ค่อยๆ ไปด้วยกันได้เลย"<br>
+"ความรู้สึกนี้รักษาได้ ไม่ต้องทนคนเดียว"<br>
+"วันนี้ทำได้แค่นี้ก็เก่งมากแล้วนะ"
+</div>
+</div>
+<div style="background:var(--red-lt);border:1.5px solid #F5AAAA;border-radius:12px;padding:12px 14px;">
+<div style="font-family:Kanit;font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px">❌ หลีกเลี่ยงคำพูดเหล่านี้</div>
+<div style="font-size:13.5px;color:var(--ink-s);line-height:1.8">
+"คิดมากไปเอง สู้ๆ สิ"<br>
+"คนอื่นเขาแย่กว่านี้อีก"<br>
+"เป็นภาระแค่นี้เองเหรอ"<br>
+"หายแล้วยังจะเศร้าอีกเหรอ"
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-hd"><span class="card-hd-icon">🤲</span><span class="card-hd-title">วิธีช่วยเหลือที่ได้ผลจริง</span></div>
+<div class="card-body">
+<div class="care-item"><div class="care-num">1</div><span><strong>อยู่ใกล้ๆ</strong> ไม่ต้องพูดมาก แค่นั่งอยู่ด้วยกันก็ช่วยได้มากค่ะ</span></div>
+<div class="care-item"><div class="care-num">2</div><span><strong>ชมเชยทุกความก้าวหน้า</strong> แม้เล็กน้อย เช่น "วันนี้กินข้าวได้มากขึ้นนะ เก่งมากเลย"</span></div>
+<div class="care-item"><div class="care-num">3</div><span><strong>ชวนทำกิจกรรมเบาๆ</strong> เดินรอบบ้าน ดูทีวีด้วยกัน ไม่บังคับ</span></div>
+<div class="care-item"><div class="care-num">4</div><span><strong>ให้กินยาสม่ำเสมอ</strong> ยาต้านซึมเศร้าต้องกินต่อเนื่อง 4-8 สัปดาห์จึงเห็นผล</span></div>
+<div class="care-item"><div class="care-num">5</div><span><strong>แจ้งแพทย์ตรงๆ</strong> ในวันนัด บอกพฤติกรรมที่สังเกตเห็น อย่าปกปิดเพราะเป็นห่วง</span></div>
+<div class="care-item"><div class="care-num">6</div><span><strong>ดูแลตัวเองด้วย</strong> ผู้ดูแลที่หมดแรงช่วยผู้ป่วยได้น้อยลง พักบ้าง ขอความช่วยเหลือจากคนอื่นได้ค่ะ</span></div>
+</div>
+</div>
+
+<div class="alert-box warn" style="margin:0 14px 14px">
+<span class="al-icon">⚠️</span>
+<div>
+<div class="al-title">ถ้าผู้ป่วยพูดว่า "อยากตาย" หรือ "ไม่อยากมีชีวิต"</div>
+<div class="al-body">อย่าปล่อยให้อยู่คนเดียว อยู่เป็นเพื่อนและแจ้งแพทย์ทันทีในวันถัดไป หรือพามา รพ. ได้เลยค่ะ ไม่ต้องรอนัด</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+💜 SPS Stroke Care · Stroke Unit รพ.สรรพสิทธิประสงค์<br>
+📞 สายด่วนสุขภาพจิต 1323 (ฟรี 24 ชม.)<br>
+<span style="opacity:.7;font-size:11px">⚠️ ใช้ประกอบการดูแล ปรึกษาแพทย์เพื่อการวินิจฉัยที่ถูกต้อง</span>
+</div>
+
+<script>
+const phqScores = new Array(8).fill(-1);
+
+function showTab(id, btn) {
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+document.getElementById(id).classList.add('show');
+document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+window.scrollTo(0,0);
+}
+
+function setPhq(btn, q, score) {
+const item = document.querySelector(`.phq-item[data-q="${q}"]`);
+item.querySelectorAll('.phq-opt').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+phqScores[q] = score;
+}
+
+function calcPhq() {
+const unanswered = phqScores.filter(s=>s<0).length;
+if(unanswered > 0) { alert(`กรุณาตอบให้ครบทุกข้อก่อนนะค่ะ (เหลืออีก ${unanswered} ข้อ)`); return; }
+
+const total = phqScores.reduce((a,b)=>a+b,0);
+const res = document.getElementById('phqResult');
+res.style.display='block';
+
+const fillPct = Math.round((total/24)*100);
+document.getElementById('phqFill').style.width = fillPct+'%';
+document.getElementById('phqScoreLabel').textContent = `คะแนน ${total} / 24`;
+
+let cls, title, body, fillColor;
+if(phqScores[7] >= 2) {
+cls='severe'; title='⚠️ ต้องพบแพทย์ทันที';
+body='คุณตอบว่ามีความคิดอยากทำร้ายตัวเอง กรุณาบอกคนในบ้านและไปพบแพทย์ทันทีนะค่ะ ไม่ต้องอาย ไม่ต้องรอนัด';
+fillColor='#D63031';
+} else if(total <= 4) {
+cls='none'; title='✅ อยู่ในเกณฑ์ปกติ';
+body='คะแนนของคุณอยู่ในระดับปกติค่ะ แต่ถ้ารู้สึกเปลี่ยนแปลงในอนาคต ประเมินซ้ำได้เลยนะค่ะ';
+fillColor='#27AE60';
+} else if(total <= 9) {
+cls='mild'; title='💛 ซึมเศร้าระดับเล็กน้อย';
+body='คะแนนบ่งชี้ว่ามีอาการซึมเศร้าเล็กน้อยค่ะ แจ้งแพทย์ในวันนัดถัดไปเพื่อประเมินเพิ่มเติม และลองทำกิจกรรมที่ช่วยได้ในแท็บ "ผู้ป่วย" ค่ะ';
+fillColor='#F59E0B';
+} else if(total <= 19) {
+cls='mod'; title='🟠 ซึมเศร้าระดับปานกลาง';
+body='คะแนนบ่งชี้ว่ามีอาการซึมเศร้าระดับปานกลางค่ะ ควรพบแพทย์ก่อนนัดถัดไปได้เลย มาได้ก่อนนัดค่ะ ไม่ต้องรอ แพทย์สามารถช่วยได้มากค่ะ';
+fillColor='#EA580C';
+} else {
+cls='mod'; title='🔴 ซึมเศร้าระดับรุนแรง';
+body='คะแนนสูงมากค่ะ กรุณาพบแพทย์โดยเร็วที่สุด มาได้เลยไม่ต้องรอนัด แพทย์มีวิธีช่วยเหลือที่ได้ผลดีค่ะ';
+fillColor='#D63031';
+}
+
+res.className='phq-result '+cls;
+document.getElementById('phqFill').style.background = fillColor;
+document.getElementById('phqResTitle').textContent = title;
+document.getElementById('phqResBody').textContent = body;
+res.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
