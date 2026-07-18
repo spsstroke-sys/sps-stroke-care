@@ -270,7 +270,7 @@ ${rows}
 // ══ SCENARIOS ══
 
 async function scWelcome(){
-await addBot(bub('สวัสดีค่ะ 🙏<br>ยินดีต้อนรับสู่ <strong>SPS Stroke Care</strong><br>บัญชีทางการ Stroke Unit<br>รพ.สรรพสิทธิประสงค์'),1000);
+await addBot(bub('สวัสดีค่ะ 🙏<br>ยินดีต้อนรับสู่ <strong>SPS Stroke Care</strong><br>บัญชีทางการ Stroke Unit<br>รพ.สรรพสิทธิประสงค์ <br><br>บัญชีนี้ให้ความรู้เท่านั้น ไม่มีเจ้าหน้าที่ตอบกลับข้อความ เร่งด่วน ฉุกเฉิน โทร 1669'),1000);
 await addBot(card('#0D7C6E','🧠','บริการของเรา',[
 {ic:'📋',tx:'D-METHOD การดูแลตัวเองที่บ้าน'},
 {ic:'🚨',tx:'อาการผิดปกติที่ต้องรีบมา รพ.'},
@@ -297,7 +297,7 @@ const steps2=[
 {l:'T',c:'#8B5CF6',ic:'🍽️',title:'Treatment & Diet',tx:'• ลดเกลือ < 2,000 mg/วัน<br>• ผัก ผลไม้ ปลา ถั่ว<br>• หลีกเลี่ยงมัน เค็ม หวานจัด'},
 {l:'H',c:'#06C755',ic:'🩺',title:'Health & Home Care',tx:'• วัด BP เช้า-เย็น เป้าหมาย < 130/80<br>• บันทึกทุกวัน<br>• นัดติดตาม 7/14/30/90 วัน'},
 {l:'O',c:'#E8870A',ic:'👁️',title:'Observation',tx:'• แขน/ขาอ่อนแรงเพิ่ม<br>• พูดไม่ชัด กลืนลำบาก<br>• ปวดหัวรุนแรง → มา รพ. ทันที'},
-{l:'D',c:'#D63031',ic:'🔁',title:'Discharge Plan Review',tx:'• ติดต่อพยาบาลผ่าน LINE นี้ 24 ชม.<br>• Stroke Fast Line: 1669<br>• ประเมิน Barthel Index ทุกนัด'},
+{l:'D',c:'#D63031',ic:'🔁',title:'Discharge Plan Review',tx:'• เร่งด่วน ฉุกเฉิน โทร 1669.<br>• Stroke Fast Line: 1669<br>• ประเมิน Barthel Index ทุกนัด'},
 ];
 for(let i=0;i<steps2.length;i++){
 const s=steps2[i];
@@ -364,7 +364,7 @@ await addBot(bub('⚠️ <strong>ห้ามหยุดยาเอง</strong
 async function scHomecare(){
 await addBot(bub('🏠 <strong>การดูแลที่บ้าน</strong><br>สำหรับผู้ดูแลและญาติ<br>เลือกหัวข้อที่ต้องการค่ะ'),1000);
 await addBot(homeCarePage(),2000);
-await addBot(bub('กดเลือกหัวข้อที่ต้องการได้เลยค่ะ<br>หรือถามพยาบาลผ่าน LINE นี้ 24 ชม. 🧠💚'),3500);
+await addBot(bub('กดเลือกหัวข้อที่ต้องการได้เลยค่ะ<br>เร่งด่วน ฉุกเฉิน โทร 1669. 🧠💚'),3500);
 }
 
 async function scSwallow(){
@@ -543,7 +543,7 @@ await addBot(`<div class="card">
 <div class="card-bd">${f.a}</div>
 </div>`,1400*(i+1));
 }
-await addBot(bub('มีคำถามอื่น LINE มาได้ตลอด 24 ชม.ค่ะ<br><strong>ทีมพยาบาล Stroke Unit รพ.สรรพสิทธิประสงค์</strong> 🧠💚'),1400*(faqs.length+1));
+await addBot(bub('เร่งด่วน ฉุกเฉิน โทร 1669.ค่ะ<br><strong>ทีมพยาบาล Stroke Unit รพ.สรรพสิทธิประสงค์</strong> 🧠💚'),1400*(faqs.length+1));
 }
 
 // ── RUN ──
